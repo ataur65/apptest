@@ -74,8 +74,8 @@ const ThemeOptionsPage = () => {
         }
         const data = await response.json();
         setSettings(data);
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err: unknown) {
+        setError((err as Error).message);
       } finally {
         setLoading(false);
       }
@@ -142,8 +142,8 @@ const ThemeOptionsPage = () => {
         } else {
           throw new Error(data.message || 'File upload failed with no URL returned.');
         }
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err: unknown) {
+        setError((err as Error).message);
       }
     }
   };
@@ -311,8 +311,8 @@ const ThemeOptionsPage = () => {
               }
             : null
         );
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err: unknown) {
+        setError((err as Error).message);
       }
     }
   };
@@ -347,8 +347,8 @@ const ThemeOptionsPage = () => {
       }
 
       alert('Theme settings saved!');
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError((err as Error).message);
     }
   };
 

@@ -27,9 +27,9 @@ const CategoriesPage: React.FC = () => {
       if (data.length > 0) {
         setSelectedCategory(data[0].name);
       }
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
+    } catch (err: unknown) {
+        setError((err as Error).message);
+      } finally {
       setLoading(false);
     }
   };
@@ -85,10 +85,9 @@ const CategoriesPage: React.FC = () => {
       alert('Category image saved successfully.');
       fetchCategories();
       setSelectedFile(null);
-    } catch (err: any) {
-      console.error('Error saving category image:', err);
-      alert(`Failed to save category image: ${err.message}`);
-    }
+    } catch (err: unknown) {
+        console.error('Error saving category image:', err);
+        alert(`Failed to save category image: ${(err as Error).message}`);
   };
 
   const handleDelete = async (categoryName: string) => {
@@ -104,10 +103,9 @@ const CategoriesPage: React.FC = () => {
       }
       alert(`Category image deleted successfully.`);
       fetchCategories();
-    } catch (err: any) {
-      console.error('Error deleting category image:', err);
-      alert(`Failed to delete category image: ${err.message}`);
-    }
+    } catch (err: unknown) {
+        console.error('Error deleting category image:', err);
+        alert(`Failed to delete category image: ${(err as Error).message}`);
   };
 
   if (loading) {

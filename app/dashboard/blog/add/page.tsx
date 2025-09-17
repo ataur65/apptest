@@ -19,8 +19,8 @@ const AddBlogPage: React.FC = () => {
         }
         const data = await response.json();
         setCategories(data);
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err: unknown) {
+        setError((err as Error).message);
       }
     };
 
@@ -45,9 +45,9 @@ const AddBlogPage: React.FC = () => {
       }
 
       router.push('/dashboard/blog');
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
+    } catch (err: unknown) {
+        setError((err as Error).message);
+      } finally {
       setLoading(false);
     }
   };
