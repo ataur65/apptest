@@ -97,8 +97,7 @@ export async function generateStaticParams() {
   }
 
 export default async function SingleBlogPostPage({ params }: { params: { id: string } }) {
-  const awaitedParams = await params;
-  const { id } = awaitedParams;
+  const { id } = params;
   const blogPost = await getBlogPost(id);
 
   if (!blogPost) {
