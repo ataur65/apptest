@@ -27,7 +27,7 @@ export default function Home() {
         if (!response.ok) {
           throw new Error('Failed to fetch products');
         }
-        const data: { products: any[]; currentPage: number; totalPages: number; totalProducts: number } = await response.json();
+        const data: { products: unknown[]; currentPage: number; totalPages: number; totalProducts: number } = await response.json();
         setProducts(data.products);
       } catch (error) {
         console.error('Error fetching products:', error);

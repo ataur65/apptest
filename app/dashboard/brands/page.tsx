@@ -17,9 +17,9 @@ const BrandsPage: React.FC = () => {
       }
       const data = await response.json();
       setBrands(data);
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
+    } catch (err: unknown) {
+        setError((err as Error).message);
+      } finally {
       setLoading(false);
     }
   };
@@ -41,9 +41,9 @@ const BrandsPage: React.FC = () => {
       }
       alert(`Brand '${brandName}' deleted successfully.`);
       fetchBrands(); // Re-fetch brands after deletion
-    } catch (err: any) {
-      console.error('Error deleting brand:', err);
-      alert(`Failed to delete brand: ${err.message}`);
+    } catch (err: unknown) {
+        console.error('Error deleting brand:', err);
+        alert(`Failed to delete brand: ${(err as Error).message}`);
     }
   };
 

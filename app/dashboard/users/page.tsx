@@ -46,8 +46,8 @@ const UsersPage: React.FC = () => {
         }
         const data = await response.json();
         setUsers(data);
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err: unknown) {
+        setError((err as Error).message);
       } finally {
         setLoading(false);
       }
@@ -81,8 +81,8 @@ const UsersPage: React.FC = () => {
       setNewPassword('');
       setNewUserRole('user');
       alert('User created successfully!');
-    } catch (err: any) {
-      setCreateError(err.message);
+    } catch (err: unknown) {
+        setCreateError((err as Error).message);
     }
   };
 
@@ -104,8 +104,8 @@ const UsersPage: React.FC = () => {
 
       setUsers((prevUsers) => prevUsers.filter((user) => user._id !== userId));
       alert('User deleted successfully!');
-    } catch (err: any) {
-      alert(`Error: ${err.message}`);
+    } catch (err: unknown) {
+        alert(`Error: ${(err as Error).message}`);
     }
   };
 

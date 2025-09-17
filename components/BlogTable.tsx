@@ -29,8 +29,8 @@ const BlogTable: React.FC = () => {
         }
         const data: { blogPosts: BlogPost[]; currentPage: number; totalPages: number; totalBlogPosts: number } = await response.json();
         setBlogPosts(data.blogPosts);
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err: unknown) {
+        setError((err as Error).message);
       } finally {
         setLoading(false);
       }
@@ -49,8 +49,8 @@ const BlogTable: React.FC = () => {
           throw new Error('Failed to delete blog post');
         }
         setBlogPosts(blogPosts.filter((post) => post.slug !== slug));
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err: unknown) {
+        setError((err as Error).message);
       }
     }
   };

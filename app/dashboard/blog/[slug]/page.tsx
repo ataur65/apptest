@@ -76,6 +76,7 @@ const EditBlogPostPage: React.FC = () => {
       router.push('/dashboard/blog'); // Redirect back to the blog list
     } catch (err: unknown) {
         alert(`Error updating blog post: ${(err as Error).message}`);
+    }
   };
 
   if (loading) {

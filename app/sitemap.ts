@@ -19,7 +19,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Fetch dynamic product routes
   const productsRes = await fetch('http://localhost:5000/api/products?limit=1000');
   const productsData = await productsRes.json();
-  const productUrls = productsData.products.map((product: any) => ({
+  const productUrls = productsData.products.map((product: { _id: string; updatedAt?: Date }) => ({
     url: `${URL}/product/${product._id}`,
     lastModified: product.updatedAt || new Date(),
   }));
@@ -27,7 +27,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Fetch dynamic blog routes
   const blogsRes = await fetch('http://localhost:5000/api/blog?limit=1000');
   const blogsData = await blogsRes.json();
-  const blogUrls = blogsData.blogPosts.map((post: any) => ({
+  const blogUrls = blogsData.blogPosts.map((post: { slug: string; date?: Date }) => ({
     url: `${URL}/blog/${post.slug}`,
     lastModified: post.date || new Date(),
   }));

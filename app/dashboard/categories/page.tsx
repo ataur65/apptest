@@ -88,6 +88,7 @@ const CategoriesPage: React.FC = () => {
     } catch (err: unknown) {
         console.error('Error saving category image:', err);
         alert(`Failed to save category image: ${(err as Error).message}`);
+    }
   };
 
   const handleDelete = async (categoryName: string) => {
@@ -106,6 +107,7 @@ const CategoriesPage: React.FC = () => {
     } catch (err: unknown) {
         console.error('Error deleting category image:', err);
         alert(`Failed to delete category image: ${(err as Error).message}`);
+    }
   };
 
   if (loading) {
