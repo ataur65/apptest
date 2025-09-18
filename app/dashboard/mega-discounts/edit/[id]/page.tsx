@@ -1,9 +1,9 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import MegaDiscountForm from '@/components/MegaDiscountForm';
+import MegaDiscountForm, { MegaDiscountFormData } from '@/components/MegaDiscountForm';
 
-const EditMegaDiscountPage = ({ params }) => {
-  const [initialData, setInitialData] = useState(null);
+const EditMegaDiscountPage = ({ params }: { params: { id: string } }) => {
+  const [initialData, setInitialData] = useState<MegaDiscountFormData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { id } = params;
@@ -17,7 +17,7 @@ const EditMegaDiscountPage = ({ params }) => {
         }
         const data = await response.json();
         setInitialData(data);
-      } catch (err) {
+      } catch (err: any) {
         setError(err.message);
       } finally {
         setLoading(false);
@@ -29,7 +29,7 @@ const EditMegaDiscountPage = ({ params }) => {
     }
   }, [id]);
 
-  const handleSubmit = async (formData) => {
+  const handleSubmit = async (formData: MegaDiscountFormData) => {
     try {
       const response = await fetch(`http://localhost:5000/api/mega-discounts/${id}`, {
         method: 'PUT',
@@ -45,7 +45,7 @@ const EditMegaDiscountPage = ({ params }) => {
 
       // Redirect to the mega discounts list page
       window.location.href = '/dashboard/mega-discounts';
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
     }
   };

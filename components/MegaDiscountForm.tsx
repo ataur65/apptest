@@ -1,7 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 
-interface MegaDiscountFormData {
+export interface MegaDiscountFormData {
   title: string;
   subtitle: string;
   image: string;

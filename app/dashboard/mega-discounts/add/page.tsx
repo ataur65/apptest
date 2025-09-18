@@ -1,11 +1,12 @@
 'use client';
 import React, { useState } from 'react';
 import MegaDiscountForm from '@/components/MegaDiscountForm';
+import { MegaDiscountFormData } from '@/components/MegaDiscountForm';
 
 const AddMegaDiscountPage = () => {
   const [error, setError] = useState(null);
 
-  const handleSubmit = async (formData) => {
+  const handleSubmit = async (formData: MegaDiscountFormData) => {
     try {
       setError(null);
       const response = await fetch('http://localhost:5000/api/mega-discounts', {
@@ -23,7 +24,7 @@ const AddMegaDiscountPage = () => {
 
       // Redirect to the mega discounts list page
       window.location.href = '/dashboard/mega-discounts';
-    } catch (err) {
+    } catch (err: any) {
       setError(err.message);
       console.error(err);
     }

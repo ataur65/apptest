@@ -2,8 +2,15 @@
 
 import { useEffect, useState } from 'react';
 
+interface FooterSettings {
+  gallery: string[];
+  newsletterText?: string;
+  copyrightText?: string;
+  clientLogos?: string[];
+}
+
 const FooterSettingsPage = () => {
-  const [settings, setSettings] = useState({ gallery: [] });
+  const [settings, setSettings] = useState<FooterSettings>({ gallery: [] });
 
   useEffect(() => {
     const fetchSettings = async () => {
@@ -20,7 +27,8 @@ const FooterSettingsPage = () => {
     fetchSettings();
   }, []);
 
-  const handleFileChange = async (e, index) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+    if (!e.target.files) return;
     const file = e.target.files[0];
     if (!file) return;
 
@@ -48,7 +56,8 @@ const FooterSettingsPage = () => {
     }
   };
 
-  const handleLogoFileChange = async (e, index) => {
+  const handleLogoFileChange = async (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+    if (!e.target.files) return;
     const file = e.target.files[0];
     if (!file) return;
 
@@ -76,7 +85,7 @@ const FooterSettingsPage = () => {
     }
   };
 
-  const handleDeleteGalleryImage = (index) => {
+  const handleDeleteGalleryImage = (index: number) => {
     if (confirm('Are you sure you want to delete this image?')) {
       const newGallery = [...(settings?.gallery || [])];
       newGallery[index] = ''; // Set to empty string to clear the image
@@ -84,7 +93,7 @@ const FooterSettingsPage = () => {
     }
   };
 
-  const handleDeleteFooterLogo = (index) => {
+  const handleDeleteFooterLogo = (index: number) => {
     if (confirm('Are you sure you want to delete this logo?')) {
       const newLogos = [...(settings?.clientLogos || [])];
       newLogos[index] = ''; // Set to empty string to clear the image
