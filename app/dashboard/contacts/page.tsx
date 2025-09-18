@@ -1,96 +1,92 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Table from '@/components/Table';
+import { FaEdit, FaTrash } from 'react-icons/fa';
+
+interface Contact {
+  _id: string;
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+  createdAt: string;
+  updatedAt: string;
+}
 
 const ContactsPage = () => {
-  const [contacts, setContacts] = useState([]);
-  const [selectedMessage, setSelectedMessage] = useState(null);
+  const [contacts, setContacts] = useState<Contact[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
     const fetchContacts = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/contacts');
-        if (!res.ok) {
-          console.error('Failed to fetch contact submissions:', res.status, res.statusText);
-          setContacts([]); // Set to empty array on failure
-          return;
-        }
-        const contentType = res.headers.get('content-type');
-        if (!contentType || !contentType.includes('application/json')) {
-          const text = await res.text();
-          console.error('Received non-JSON response for contact submissions:', text);
-          setContacts([]); // Set to empty array on non-JSON response
-          return;
-        }
-        const data = await res.json();
-        if (Array.isArray(data)) {
-          setContacts(data);
-        } else {
-          console.error('Received non-array data for contact submissions:', data);
-          setContacts([]);
-        }
-      } catch (error) {
-        console.error('Error fetching or parsing contact submissions:', error);
-        setContacts([]); // Set to empty array on error
+        const response = await axios.get('/api/contacts');
+        setContacts(response.data);
+      } catch (err: any) {
+        setError(err);
+        toast.error('Failed to fetch contacts.');
+      } finally {
+        setLoading(false);
       }
     };
     fetchContacts();
   }, []);
 
-  const handleDelete = async (id) => {
-    try {
-      const res = await fetch(`http://localhost:5000/api/contacts/${id}`, {
-        method: 'DELETE',
-      });
-      console.log('Raw response from delete API:', res);
-      if (res.ok) {
+  const handleDelete = async (id: string) => {
+    if (window.confirm('Are you sure you want to delete this contact?')) {
+      try {
+        await axios.delete(`/api/contacts/${id}`);
         setContacts(contacts.filter((contact) => contact._id !== id));
-      } else {
-        const data = await res.json();
-        alert(data.message);
+        toast.success('Contact deleted successfully!');
+      } catch (err) {
+        toast.error('Failed to delete contact.');
+        console.error('Error deleting contact:', err);
       }
-    } catch (error) {
-      console.error('Error deleting contact:', error);
-      alert('An error occurred while deleting the contact.');
     }
   };
 
-  const handleView = (message) => {
-    setSelectedMessage(message);
-  };
-
   const columns = [
-    { Header: 'Name', accessor: 'name' },
-    { Header: 'Email', accessor: 'email' },
-    { Header: 'Message', accessor: 'message' },
-    { Header: 'Date', accessor: 'createdAt' },
+    { header: 'Name', accessor: 'name' },
+    { header: 'Email', accessor: 'email' },
+    { header: 'Subject', accessor: 'subject' },
+    { header: 'Message', accessor: 'message' },
+    { header: 'Created At', accessor: 'createdAt', render: (item: Contact) => new Date(item.createdAt).toLocaleDateString() },
+    {
+      header: 'Actions',
+      accessor: 'actions',
+      render: (item: Contact) => (
+        <div className="flex space-x-2">
+          <button
+            onClick={() => handleDelete(item._id)}
+            className="text-red-600 hover:text-red-800"
+          >
+            <FaTrash />
+          </button>
+        </div>
+      ),
+    },
   ];
 
-  const actions = [
-    { name: 'View', onClick: handleView },
-    { name: 'Delete', onClick: (row) => handleDelete(row._id) },
-  ];
+  if (loading) {
+    return <div className="text-center py-4">Loading contacts...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center py-4 text-red-600">Error: {error.message}</div>;
+  }
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold mb-4">Contact Submissions</h1>
-      {Array.isArray(contacts) && <Table columns={columns} data={contacts} actions={actions} />}
-
-      {selectedMessage && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full" id="my-modal">
-          <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-            <h3 className="text-lg font-bold mb-4">Message Details</h3>
-            <p><strong>Name:</strong> {selectedMessage.name}</p>
-            <p><strong>Email:</strong> {selectedMessage.email}</p>
-            <p><strong>Message:</strong> {selectedMessage.message}</p>
-            <div className="mt-4 flex justify-end">
-              <button onClick={() => setSelectedMessage(null)} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700">
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
+    <div className="container mx-auto p-6 bg-gray-50 min-h-screen">
+      <h2 className="text-2xl font-bold text-gray-800 mb-6">Contacts</h2>
+      {contacts.length === 0 ? (
+        <div className="text-center py-4 text-gray-600">No contacts found.</div>
+      ) : (
+        <Table columns={columns} data={contacts} />
       )}
     </div>
   );
