@@ -5,16 +5,7 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import BlogPageTemplate from '@/components/BlogPageTemplate';
-
-interface BlogPost {
-  _id: string;
-  title: string;
-  excerpt: string;
-  date: string;
-  image: string;
-  slug: string;
-  category: string;
-}
+import { BlogPost } from '@/lib/interfaces';
 
 const BlogCategoryPage: React.FC = () => {
   const params = useParams();
@@ -34,8 +25,8 @@ const BlogCategoryPage: React.FC = () => {
         }
         const data: { blogPosts: BlogPost[]; currentPage: number; totalPages: number; totalBlogPosts: number } = await response.json();
         setBlogPosts(data.blogPosts);
-      } catch (err: unknown) {
-        setError((err as Error).message);
+      } catch (err: any) {
+        setError(err.message);
       } finally {
         setLoading(false);
       }

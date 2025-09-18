@@ -1,15 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-
-interface BlogPost {
-  slug: string;
-  category: string;
-  title: string;
-  date: string;
-  image: string;
-  excerpt: string;
-}
+import { BlogPost } from '@/lib/interfaces';
 
 interface BlogPostsProps {
   items: BlogPost[];

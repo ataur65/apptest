@@ -2,7 +2,8 @@
 
 import React from 'react';
 import Link from 'next/link';
-import UserForm, { UserFormData } from '../../../../components/UserForm';
+import UserForm from '@/components/UserForm';
+import { UserFormData } from '@/lib/interfaces';
 import { useRouter } from 'next/navigation';
 
 const AddUserPage: React.FC = () => {

@@ -3,18 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-
-interface HeroSlide {
-  image: string;
-  title: string;
-  subtitle: string;
-  ctaButtonText: string;
-  ctaButtonLink: string;
-}
-
-interface Settings {
-  heroSlides: HeroSlide[];
-}
+import { HeroSlide, Settings } from '@/lib/interfaces';
 
 const HeroSection = () => {
   const [settings, setSettings] = useState<Settings | null>(null);
@@ -31,8 +20,8 @@ const HeroSection = () => {
         }
         const data = await response.json();
         setSettings(data);
-      } catch (err: unknown) {
-        setError((err as Error).message);
+      } catch (err: any) {
+        setError(err.message);
       } finally {
         setLoading(false);
       }
@@ -45,7 +34,7 @@ const HeroSection = () => {
     if (settings && settings.heroSlides && settings.heroSlides.length > 1) {
       const interval = setInterval(() => {
         setCurrentSlide((prevSlide) =>
-          prevSlide === settings.heroSlides.length - 1 ? 0 : prevSlide + 1
+          prevSlide === (settings.heroSlides?.length || 0) - 1 ? 0 : prevSlide + 1
         );
       }, 10000); // Change slide every 10 seconds
       return () => clearInterval(interval);

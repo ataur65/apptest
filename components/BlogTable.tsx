@@ -29,8 +29,8 @@ const BlogTable: React.FC = () => {
         }
         const data: { blogPosts: BlogPost[]; currentPage: number; totalPages: number; totalBlogPosts: number } = await response.json();
         setBlogPosts(data.blogPosts);
-      } catch (err: unknown) {
-        setError((err as Error).message);
+      } catch (err: any) {
+        setError(err.message);
       } finally {
         setLoading(false);
       }
@@ -49,8 +49,8 @@ const BlogTable: React.FC = () => {
           throw new Error('Failed to delete blog post');
         }
         setBlogPosts(blogPosts.filter((post) => post.slug !== slug));
-      } catch (err: unknown) {
-        setError((err as Error).message);
+      } catch (err: any) {
+        setError(err.message);
       }
     }
   };
@@ -62,11 +62,11 @@ const BlogTable: React.FC = () => {
   const columns = [
     { Header: 'Title', accessor: 'title' },
     { Header: 'Excerpt', accessor: 'excerpt' },
-    { Header: 'Created At', accessor: 'date', Cell: ({ value }) => new Date(value).toLocaleDateString() },
+    { Header: 'Created At', accessor: 'date', Cell: ({ value }: { value: string }) => new Date(value).toLocaleDateString() },
     {
       Header: 'Action',
       accessor: 'action',
-      Cell: ({ row }) => (
+      Cell: ({ row }: { row: BlogPost }) => (
         <div className="flex items-center">
           <button
             onClick={() => onEdit(row)}
@@ -94,7 +94,7 @@ const BlogTable: React.FC = () => {
   }
 
   return (
-    <Table columns={columns} data={blogPosts} minWidth="min-w-[800px]" />
+    <Table columns={columns} data={blogPosts} className="min-w-[800px]" actions={[]} />
   );
 };
 

@@ -1,10 +1,6 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-
-interface ClientLogo {
-  imageUrl: string;
-  link?: string; // Optional link for the logo
-}
+import { ClientLogo } from '@/lib/interfaces';
 
 const BannersClients = () => {
   const [clientLogos, setClientLogos] = useState<ClientLogo[]>([]);
@@ -20,7 +16,7 @@ const BannersClients = () => {
         if (data.clientLogos) {
           setClientLogos(data.clientLogos);
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error fetching client logos:', error);
       }
     };

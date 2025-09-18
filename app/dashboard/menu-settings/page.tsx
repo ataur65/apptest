@@ -1,15 +1,38 @@
-
 "use client";
 import { useState, useEffect } from 'react';
 
+interface MenuItem {
+  _id: string;
+  name: string;
+  page: string;
+  children?: MenuItem[];
+}
+
+interface Page {
+  name: string;
+  path: string;
+}
+
+interface ShopDepartment {
+  name: string;
+}
+
+interface Category {
+  name: string;
+}
+
+interface Brand {
+  name: string;
+}
+
 const MenuSettingsPage = () => {
-  const [menuItems, setMenuItems] = useState([]);
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [newItem, setNewItem] = useState({ name: '', page: '' });
   const [newSubItem, setNewSubItem] = useState({ name: '', page: '' });
-  const [pages, setPages] = useState([]);
-  const [shopDepartments, setShopDepartments] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [brands, setBrands] = useState([]);
+  const [pages, setPages] = useState<Page[]>([]);
+  const [shopDepartments, setShopDepartments] = useState<ShopDepartment[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [brands, setBrands] = useState<Brand[]>([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedBrand, setSelectedBrand] = useState('');
 
@@ -22,7 +45,7 @@ const MenuSettingsPage = () => {
         if (data && data.data) {
           setMenuItems(data.data);
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error fetching menu items:', error);
       }
     };
@@ -30,7 +53,7 @@ const MenuSettingsPage = () => {
     // Fetch available pages
     const fetchPages = async () => {
       // In a real application, you would fetch this from your API
-      const availablePages = [
+      const availablePages: Page[] = [
         { name: 'Home', path: '/' },
         { name: 'Shop', path: '/products' },
         { name: 'Blog', path: '/blog' },
@@ -47,7 +70,7 @@ const MenuSettingsPage = () => {
         if (data) {
           setShopDepartments(data);
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error fetching shop departments:', error);
       }
     };
@@ -59,7 +82,7 @@ const MenuSettingsPage = () => {
         if (data) {
           setCategories(data);
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error fetching categories:', error);
       }
     };
@@ -71,7 +94,7 @@ const MenuSettingsPage = () => {
         if (data) {
           setBrands(data);
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error fetching brands:', error);
       }
     };
@@ -96,16 +119,17 @@ const MenuSettingsPage = () => {
         const data = await res.json();
         setMenuItems([...menuItems, data.data]);
         setNewItem({ name: '', page: pages[0]?.path || '' });
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error adding menu item:', error);
       }
     }
   };
 
-  const handleAddSubItem = async (parentId, subItemData = newSubItem) => {
+  const handleAddSubItem = async (parentId: string, subItemData = newSubItem) => {
     if (subItemData.name && subItemData.page) {
       try {
         const parentItem = menuItems.find(item => item._id === parentId);
+        if (!parentItem) return;
         const updatedChildren = [...(parentItem.children || []), subItemData];
         const res = await fetch(`http://localhost:5000/api/menuitems/${parentId}`,
           {
@@ -122,13 +146,13 @@ const MenuSettingsPage = () => {
         if (subItemData === newSubItem) {
           setNewSubItem({ name: '', page: pages[0]?.path || '' });
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error adding submenu item:', error);
       }
     }
   };
 
-  const handleDeleteItem = async (id) => {
+  const handleDeleteItem = async (id: string) => {
     try {
       await fetch(`http://localhost:5000/api/menuitems/${id}`,
         {
@@ -136,17 +160,17 @@ const MenuSettingsPage = () => {
         }
       );
       setMenuItems(menuItems.filter((item) => item._id !== id));
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error deleting menu item:', error);
     }
   };
 
-  const handleDeleteSubItem = async (parentId, subItemId) => {
+  const handleDeleteSubItem = async (parentId: string, subItemId: string) => {
     try {
       const parentItem = menuItems.find(item => item._id === parentId);
       if (!parentItem) return;
 
-      const updatedChildren = parentItem.children.filter(child => child._id !== subItemId);
+      const updatedChildren = (parentItem.children || []).filter(child => child._id !== subItemId);
 
       const res = await fetch(`http://localhost:5000/api/menuitems/${parentId}`, {
         method: 'PUT',
@@ -158,7 +182,7 @@ const MenuSettingsPage = () => {
 
       const data = await res.json();
       setMenuItems(menuItems.map(item => item._id === parentId ? data.data : item));
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error deleting submenu item:', error);
     }
   };

@@ -17,8 +17,8 @@ const BrandsPage: React.FC = () => {
       }
       const data = await response.json();
       setBrands(data);
-    } catch (err: unknown) {
-        setError((err as Error).message);
+    } catch (err: any) {
+        setError(err.message);
       } finally {
       setLoading(false);
     }

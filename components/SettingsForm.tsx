@@ -2,9 +2,21 @@
 
 import { useState, useEffect } from 'react';
 
-const SettingsForm = ({ fields, data, onSubmit }) => {
+interface Field {
+  name: string;
+  label: string;
+  type: string;
+}
+
+interface SettingsFormProps {
+  fields: Field[];
+  data: any;
+  onSubmit: (data: any) => void;
+}
+
+const SettingsForm: React.FC<SettingsFormProps> = ({ fields, data, onSubmit }) => {
   const [formData, setFormData] = useState(() => {
-    const initialData = {};
+    const initialData: { [key: string]: any } = {};
     fields.forEach(field => {
       initialData[field.name] = data[field.name] || '';
     });
@@ -12,18 +24,18 @@ const SettingsForm = ({ fields, data, onSubmit }) => {
   });
 
   useEffect(() => {
-    const updatedData = {};
+    const updatedData: { [key: string]: any } = {};
     fields.forEach(field => {
       updatedData[field.name] = data[field.name] || '';
     });
     setFormData(updatedData);
   }, [data, fields]);
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onSubmit(formData);
   };

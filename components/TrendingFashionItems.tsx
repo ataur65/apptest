@@ -1,27 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { Product } from '@/lib/interfaces';
 
-interface FashionProduct {
-  _id: string;
-  category: string;
-  name: string;
-  price: string;
-  image: string;
-  rating: number;
-  originalPrice: string | null;
-  isSale: boolean;
-  brand: string; // Added brand property
-  shopDepartment: string;
-  url: string;
+interface TrendingFashionItemsProps {
+  items: Product[];
 }
 
-
-
-const TrendingFashionItems = ({ items }) => {
+const TrendingFashionItems: React.FC<TrendingFashionItemsProps> = ({ items }) => {
   const [activeFashionCategory, setActiveFashionCategory] = useState('All');
   const [activeBrand, setActiveBrand] = useState('All'); // New state for active brand
-  const [filteredFashionProducts, setFilteredFashionProducts] = useState<FashionProduct[]>([]);
+  const [filteredFashionProducts, setFilteredFashionProducts] = useState<Product[]>([]);
 
   useEffect(() => {
     let products = items;
@@ -44,7 +33,7 @@ const TrendingFashionItems = ({ items }) => {
     setActiveFashionCategory('All'); // Reset category filter when brand changes
   };
 
-    const uniqueBrands = items && Array.from(new Set(items.map(product => product.brand).filter(p => p))); // Get unique brands
+    const uniqueBrands = items && Array.from(new Set(items.map(product => product.brand).filter((p): p is string => !!p))); // Get unique brands
 
   return (
     <section className="bg-gray-100 py-12">
@@ -67,7 +56,7 @@ const TrendingFashionItems = ({ items }) => {
                 className={`tab-fashion-button ${activeBrand === brand ? 'active text-[#f7931e]' : 'text-gray-600 hover:text-[#f7931e]'}`}
                 onClick={() => handleBrandTabClick(brand)}
               >
-                {brand.toUpperCase()}
+                {brand?.toUpperCase()}
               </button>
             ))}
           </div>
@@ -106,9 +95,9 @@ const TrendingFashionItems = ({ items }) => {
                   ))}
                 </div>
                 {product.originalPrice && (
-                  <p className="text-gray-400 line-through text-sm font-medium">${product.originalPrice}</p>
+                  <p className="text-gray-400 line-through text-sm font-medium">${product.originalPrice.toFixed(2)}</p>
                 )}
-                <p className="text-red-600 font-bold text-xl">${product.price}</p>
+                <p className="text-red-600 font-bold text-xl">${product.price.toFixed(2)}</p>
                 <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mt-2">{product.category.toUpperCase()}</span> {/* Category as tag */}
               </div>
             </div>

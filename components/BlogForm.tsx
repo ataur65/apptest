@@ -2,13 +2,13 @@
 import React, { useState } from 'react';
 import Editor from './Editor'; // Import the new Editor component
 
-export interface BlogFormData {
+interface BlogFormData {
   title: string;
-  content: string;
-  author: string;
   category: string;
+  image: string;
   excerpt: string;
-  image?: string;
+  content: string;
+  author?: string;
 }
 
 interface BlogFormProps {
@@ -54,7 +54,7 @@ const BlogForm: React.FC<BlogFormProps> = ({ onSubmit, initialData, categories }
           } else {
             console.error('Image upload failed:', data.message);
           }
-        } catch (error) {
+        } catch (error: any) {
           console.error('Error parsing JSON response:', error);
         }
       }
@@ -69,7 +69,7 @@ const BlogForm: React.FC<BlogFormProps> = ({ onSubmit, initialData, categories }
       };
 
       onSubmit(blogData);
-    } catch (error) {
+    } catch (error: any) {
       console.error('An unexpected error occurred in handleSubmit:', error);
     }
   };

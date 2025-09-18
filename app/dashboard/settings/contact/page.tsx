@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import SettingsForm from '@/components/SettingsForm';
+import { ContactSettings } from '@/lib/interfaces';
 
 const ContactSettingsPage = () => {
-  const [settings, setSettings] = useState({});
+  const [settings, setSettings] = useState<Partial<ContactSettings>>({});
 
   useEffect(() => {
     const fetchSettings = async () => {
@@ -22,7 +23,7 @@ const ContactSettingsPage = () => {
     { name: 'formTitle', label: 'Form Title', type: 'text' },
   ];
 
-  const handleSubmit = async (newSettings) => {
+  const handleSubmit = async (newSettings: ContactSettings) => {
     await fetch('/api/settings/contact', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

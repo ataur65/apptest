@@ -2,11 +2,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-
-interface Category {
-  name: string;
-  imageUrl: string | null;
-}
+import { Category } from '@/lib/interfaces';
 
 const CategoriesPage: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -27,8 +23,8 @@ const CategoriesPage: React.FC = () => {
       if (data.length > 0) {
         setSelectedCategory(data[0].name);
       }
-    } catch (err: unknown) {
-        setError((err as Error).message);
+    } catch (err: any) {
+        setError(err.message);
       } finally {
       setLoading(false);
     }
@@ -85,9 +81,9 @@ const CategoriesPage: React.FC = () => {
       alert('Category image saved successfully.');
       fetchCategories();
       setSelectedFile(null);
-    } catch (err: unknown) {
+    } catch (err: any) {
         console.error('Error saving category image:', err);
-        alert(`Failed to save category image: ${(err as Error).message}`);
+        alert(`Failed to save category image: ${err.message}`);
     }
   };
 
@@ -104,9 +100,9 @@ const CategoriesPage: React.FC = () => {
       }
       alert(`Category image deleted successfully.`);
       fetchCategories();
-    } catch (err: unknown) {
+    } catch (err: any) {
         console.error('Error deleting category image:', err);
-        alert(`Failed to delete category image: ${(err as Error).message}`);
+        alert(`Failed to delete category image: ${err.message}`);
     }
   };
 

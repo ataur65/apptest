@@ -5,8 +5,21 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+interface HeroSectionSettings {
+  heading: string;
+  subheading: string;
+  imageUrl: string;
+  buttonUrl: string;
+}
+
+interface BootcampSettings {
+  productsPageHero: HeroSectionSettings;
+  blogPageHero: HeroSectionSettings;
+  contactPageHero: HeroSectionSettings;
+}
+
 const BootcampSettingsPage = () => {
-  const [settings, setSettings] = useState({
+  const [settings, setSettings] = useState<BootcampSettings>({
     productsPageHero: { heading: '', subheading: '', imageUrl: '', buttonUrl: '' },
     blogPageHero: { heading: '', subheading: '', imageUrl: '', buttonUrl: '' },
     contactPageHero: { heading: '', subheading: '', imageUrl: '', buttonUrl: '' },
@@ -19,7 +32,7 @@ const BootcampSettingsPage = () => {
         if (response.data) {
           setSettings(response.data);
         }
-      } catch (error) {
+      } catch (error: any) {
         toast.error('Failed to fetch settings.');
         console.error('Error fetching settings:', error);
       }
@@ -58,7 +71,7 @@ const BootcampSettingsPage = () => {
         },
       }));
       toast.success('Image uploaded successfully!');
-    } catch (error) {
+    } catch (error: any) {
       toast.error('Image upload failed.');
       console.error('Error uploading image:', error);
     }
@@ -69,7 +82,7 @@ const BootcampSettingsPage = () => {
     try {
       await axios.put('/api/settings', settings);
       toast.success('Settings updated successfully!');
-    } catch (error) {
+    } catch (error: any) {
       toast.error('Failed to update settings.');
       console.error('Error updating settings:', error);
     }

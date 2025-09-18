@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebook, faTwitter, faInstagram, faLinkedin, faYoutube, faPinterest, faSnapchat, faTiktok, faWhatsapp, faReddit } from '@fortawesome/free-brands-svg-icons';
+import { faGlobe } from '@fortawesome/free-solid-svg-icons';
+import { SocialLink } from '@/lib/interfaces';
 
 const socialPlatforms = [
   { name: 'Facebook', icon: faFacebook },
@@ -18,7 +20,7 @@ const socialPlatforms = [
 ];
 
 const SocialSettingsForm = () => {
-  const [socialLinks, setSocialLinks] = useState([]);
+  const [socialLinks, setSocialLinks] = useState<SocialLink[]>([]);
   const [newLink, setNewLink] = useState({ platform: 'Facebook', url: '' });
 
   useEffect(() => {
@@ -30,7 +32,7 @@ const SocialSettingsForm = () => {
         if (data && data.data) {
           setSocialLinks(data.data);
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error fetching social links:', error);
       }
     };
@@ -50,19 +52,19 @@ const SocialSettingsForm = () => {
         const data = await res.json();
         setSocialLinks([...socialLinks, data.data]);
         setNewLink({ platform: 'Facebook', url: '' });
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error adding social link:', error);
       }
     }
   };
 
-  const handleDeleteLink = async (id) => {
+  const handleDeleteLink = async (id: string) => {
     try {
       await fetch(`http://localhost:5000/api/sociallinks/${id}`, {
         method: 'DELETE',
       });
       setSocialLinks(socialLinks.filter((link) => link._id !== id));
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error deleting social link:', error);
     }
   };
@@ -74,10 +76,10 @@ const SocialSettingsForm = () => {
         {socialLinks.map((link, index) => (
           <div key={link._id} className="flex items-center justify-between bg-gray-100 p-3 rounded-lg">
             <div className="flex items-center">
-              <FontAwesomeIcon icon={socialPlatforms.find(p => p.name === link.platform)?.icon} className="text-2xl mr-4" />
+              <FontAwesomeIcon icon={socialPlatforms.find(p => p.name === link.platform)?.icon || faGlobe} className="text-2xl mr-4" />
               <a href={link.url} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">{link.url}</a>
             </div>
-            <button onClick={() => handleDeleteLink(link._id)} className="text-red-500 hover:text-red-700">Delete</button>
+            <button onClick={() => handleDeleteLink(link._id as string)} className="text-red-500 hover:text-red-700">Delete</button>
           </div>
         ))}
       </div>

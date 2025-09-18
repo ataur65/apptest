@@ -2,7 +2,8 @@
 
 import React from 'react';
 import Link from 'next/link';
-import ProductForm, { ProductFormData } from '../../../../components/ProductForm';
+import ProductForm from '../../../../components/ProductForm';
+import { ProductFormData } from '@/lib/interfaces';
 import { useRouter } from 'next/navigation';
 
 const AddProductPage: React.FC = () => {
@@ -42,7 +43,7 @@ const AddProductPage: React.FC = () => {
       console.log('New Product Added:', newProduct);
       router.push('/dashboard/products');
       return true; // Indicate success
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error adding product:', error);
       alert('Failed to add product. Please try again.');
       return false; // Indicate failure

@@ -2,13 +2,7 @@
 import React from 'react';
 import Table from './Table';
 import Image from 'next/image';
-
-interface User {
-  _id: string;
-  username: string;
-  role: string;
-  // Add other fields if needed from the backend User model
-}
+import { User } from '@/lib/interfaces';
 
 interface UsersTableProps {
   users: User[];
@@ -20,7 +14,7 @@ const UsersTable: React.FC<UsersTableProps> = ({ users, onDelete }) => { // Acce
     {
       Header: 'Username',
       accessor: 'username',
-      Cell: ({ row }) => (
+      Cell: ({ row }: { row: User }) => (
         <div className="flex items-center gap-3">
           {/* Assuming no avatar for now, or add a placeholder */}
           {/* <Image className="h-8 w-8 rounded-full object-cover" src={row.avatar || '/img/placeholder.jpg'} alt={row.name} width={32} height={32} /> */}
@@ -32,7 +26,7 @@ const UsersTable: React.FC<UsersTableProps> = ({ users, onDelete }) => { // Acce
     {
       Header: 'Action',
       accessor: 'action',
-      Cell: ({ row }) => (
+      Cell: ({ row }: { row: User }) => (
         <>
           {/* You can add edit/delete buttons here later */}
           <button className="ml-4 bg-green-500/20 text-green-300 text-xs font-semibold py-1 px-3 rounded-md hover:bg-green-500/40">View</button>
@@ -43,7 +37,7 @@ const UsersTable: React.FC<UsersTableProps> = ({ users, onDelete }) => { // Acce
   ];
 
   return (
-    <Table columns={columns} data={users} minWidth="min-w-[800px]" />
+    <Table columns={columns} data={users} className="min-w-[800px]" />
   );
 };
 

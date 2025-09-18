@@ -3,19 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Table from './Table';
 import Image from 'next/image';
 import Link from 'next/link';
-
-interface Product {
-  _id: string;
-  name: string;
-  description: string;
-  price: number;
-  category: string;
-  image: string;
-  rating: number;
-  originalPrice?: number;
-  isSale: boolean;
-  createdAt: string;
-}
+import { Product } from '@/lib/interfaces';
 
 const ProductsTable: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -31,8 +19,8 @@ const ProductsTable: React.FC = () => {
         }
         const data = await response.json();
         setProducts(data.products || []);
-      } catch (err: unknown) {
-        setError((err as Error).message);
+      } catch (err: any) {
+        setError(err.message);
       } finally {
         setLoading(false);
       }
@@ -54,9 +42,9 @@ const ProductsTable: React.FC = () => {
         }
 
         setProducts(products.filter((product) => product._id !== id));
-      } catch (err: unknown) {
+      } catch (err: any) {
         console.error(err);
-        alert((err as Error).message);
+        alert(err.message);
       }
     }
   };
@@ -65,7 +53,7 @@ const ProductsTable: React.FC = () => {
     {
       Header: 'Image',
       accessor: 'image',
-      Cell: ({ row }) => (
+      Cell: ({ row }: { row: Product }) => (
         typeof row.image === 'string' && row.image ? (
           <Image className="h-8 w-8 rounded-full object-cover" src={row.image} alt={row.name || 'Product image'} width={32} height={32} />
         ) : (
@@ -77,23 +65,23 @@ const ProductsTable: React.FC = () => {
     {
       Header: 'Description',
       accessor: 'description',
-      Cell: ({ value }) => `${value.substring(0, 50)}...`,
+      Cell: ({ value }: { value: string }) => `${value.substring(0, 50)}...`,
     },
     {
       Header: 'Price',
       accessor: 'price',
-      Cell: ({ value }) => `${value.toFixed(2)}`,
+      Cell: ({ value }: { value: number }) => `${value.toFixed(2)}`,
     },
     {
       Header: 'Created At',
       accessor: 'createdAt',
-      Cell: ({ value }) => new Date(value).toLocaleDateString(),
+      Cell: ({ value }: { value: string }) => new Date(value).toLocaleDateString(),
     },
     { Header: 'Stock', accessor: 'rating' }, // Using rating as a placeholder for stock
     {
       Header: 'Action',
       accessor: 'action',
-      Cell: ({ row }) => (
+      Cell: ({ row }: { row: Product }) => (
         <>
           <Link href={`/dashboard/products/edit/${row._id}`} className="bg-green-500/20 text-green-300 text-xs font-semibold py-1 px-3 rounded-md hover:bg-green-500/40">Edit</Link>
           <button onClick={() => handleDelete(row._id)} className="ml-2 bg-red-500/20 text-red-300 text-xs font-semibold py-1 px-3 rounded-md hover:bg-red-500/40">Delete</button>
@@ -111,7 +99,7 @@ const ProductsTable: React.FC = () => {
   }
 
   return (
-    <Table columns={columns} data={products} minWidth="min-w-[800px]" />
+    <Table columns={columns} data={products} className="min-w-[800px]" />
   );
 };
 

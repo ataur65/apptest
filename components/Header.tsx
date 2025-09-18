@@ -5,33 +5,7 @@ import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import MobileSidebar from './MobileSidebar'; // Import MobileSidebar
 import SocialIcons from './SocialIcons'; // Import SocialIcons
-
-interface Settings {
-  headerLogoUrl: string;
-  headerLogoText: string;
-  showHeaderLogoImage: boolean;
-  showHeaderLogoText: boolean;
-}
-
-interface SocialLink {
-  _id?: string;
-  platform: string;
-  url: string;
-}
-
-interface Category {
-  name: string;
-  imageUrl: string | null;
-}
-
-interface MenuItem {
-  _id: string;
-  name: string;
-  page: string;
-  children?: MenuItem[];
-}
-
-
+import { Settings, SocialLink, Category, MenuItem } from '@/lib/interfaces';
 
 const Header = () => {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
@@ -66,9 +40,9 @@ const Header = () => {
         }
         const data = await res.json();
         setSettings(data);
-      } catch (error: unknown) {
+      } catch (error: any) {
         console.error('Error fetching header settings:', error);
-        setError((error as Error).message);
+        setError(error.message);
       } finally {
         setLoading(false);
       }
@@ -82,7 +56,7 @@ const Header = () => {
         }
         const data = await response.json();
         setCategories(data);
-      } catch (err: unknown) {
+      } catch (err: any) {
         console.error('Error fetching categories:', err);
       }
     };
@@ -94,7 +68,7 @@ const Header = () => {
         if (data && data.data) {
           setSocialLinks(data.data);
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error fetching social links:', error);
       }
     };
@@ -106,7 +80,7 @@ const Header = () => {
         if (data && data.data) {
           setMenuItems(data.data);
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error fetching menu items:', error);
       }
     };

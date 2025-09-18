@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import BlogForm, { BlogFormData } from '../../../../components/BlogForm';
+import BlogForm from '../../../../components/BlogForm';
 
 const AddBlogPage: React.FC = () => {
   const router = useRouter();
@@ -19,15 +19,15 @@ const AddBlogPage: React.FC = () => {
         }
         const data = await response.json();
         setCategories(data);
-      } catch (err: unknown) {
-        setError((err as Error).message);
+      } catch (err: any) {
+        setError(err.message);
       }
     };
 
     fetchCategories();
   }, []);
 
-  const handleSubmit = async (formData: BlogFormData) => {
+  const handleSubmit = async (formData: any) => {
     setLoading(true);
     setError(null);
     try {
@@ -45,10 +45,9 @@ const AddBlogPage: React.FC = () => {
       }
 
       router.push('/dashboard/blog');
-    } catch (err: unknown) {
-        setError((err as Error).message);
-      } finally {
-      setLoading(false);
+          } catch (err: any) {
+            setError(err.message);
+          } finally {      setLoading(false);
     }
   };
 

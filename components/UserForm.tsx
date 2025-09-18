@@ -1,15 +1,6 @@
 "use client";
 import React from 'react';
-
-export interface UserFormData {
-  username: string;
-  email: string;
-  password?: string;
-  phone: string;
-  isAdmin: boolean;
-  isActive: boolean;
-  address: string;
-}
+import { UserFormData } from '@/lib/interfaces';
 
 interface UserFormProps {
   onSubmit: (formData: UserFormData) => void;

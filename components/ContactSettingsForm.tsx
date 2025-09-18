@@ -4,15 +4,21 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
+interface ContactSettings {
+  address: string;
+  phone: string;
+  email: string;
+}
+
 const ContactSettingsForm = () => {
-  const [settings, setSettings] = useState({ address: '', phone: '', email: '' });
+  const [settings, setSettings] = useState<ContactSettings>({ address: '', phone: '', email: '' });
 
   useEffect(() => {
     const fetchSettings = async () => {
       try {
         const response = await axios.get('http://localhost:5000/api/settings/contact');
         setSettings(response.data);
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error fetching contact settings:', error);
       }
     };
@@ -20,17 +26,17 @@ const ContactSettingsForm = () => {
     fetchSettings();
   }, []);
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setSettings((prevSettings) => ({ ...prevSettings, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       await axios.post('http://localhost:5000/api/settings/contact', settings);
       alert('Contact settings updated successfully!');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error updating contact settings:', error);
       alert('Failed to update contact settings.');
     }
@@ -45,7 +51,7 @@ const ContactSettingsForm = () => {
         <textarea
           id="address"
           name="address"
-          rows="4"
+          rows={4}
           value={settings.address}
           onChange={handleChange}
           className="md:col-span-2 w-full bg-custom-card rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-custom-accent text-sm"

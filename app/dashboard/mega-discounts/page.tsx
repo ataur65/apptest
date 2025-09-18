@@ -2,8 +2,15 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 
+interface MegaDiscount {
+  _id: string;
+  title: string;
+  subtitle: string;
+  image: string;
+}
+
 const MegaDiscountsPage = () => {
-  const [megaDiscounts, setMegaDiscounts] = useState([]);
+  const [megaDiscounts, setMegaDiscounts] = useState<MegaDiscount[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -16,7 +23,7 @@ const MegaDiscountsPage = () => {
         }
         const data = await response.json();
         setMegaDiscounts(data);
-      } catch (err) {
+      } catch (err: any) {
         setError(err.message);
       } finally {
         setLoading(false);
@@ -26,7 +33,7 @@ const MegaDiscountsPage = () => {
     fetchMegaDiscounts();
   }, []);
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id: string) => {
     if (confirm('Are you sure you want to delete this mega discount?')) {
       try {
         const response = await fetch(`http://localhost:5000/api/mega-discounts/${id}`, {
@@ -38,7 +45,7 @@ const MegaDiscountsPage = () => {
         }
 
         setMegaDiscounts(megaDiscounts.filter((discount) => discount._id !== id));
-      } catch (err) {
+      } catch (err: any) {
         console.error(err);
       }
     }

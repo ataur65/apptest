@@ -1,14 +1,7 @@
 "use client"
 
 import React, { useState, useEffect } from 'react';
-
-interface Review {
-  _id: string;
-  user: string;
-  rating: number;
-  comment: string;
-  createdAt: string;
-}
+import { Review } from '@/lib/interfaces';
 
 interface ReviewsProps {
   productId: string;

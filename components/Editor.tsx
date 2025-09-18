@@ -3,7 +3,12 @@
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 
-const Editor = ({ content, onChange }) => {
+interface EditorProps {
+  content: string;
+  onChange: (content: string) => void;
+}
+
+const Editor: React.FC<EditorProps> = ({ content, onChange }) => {
   const editor = useEditor({
     extensions: [StarterKit],
     content: content,

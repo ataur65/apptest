@@ -1,16 +1,12 @@
 
 'use client';
 import React, { useState, useEffect } from 'react';
-
-interface Category {
-  name: string;
-  imageUrl: string | null;
-}
+import { Category } from '@/lib/interfaces';
 
 const TopCategories = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -21,9 +17,9 @@ const TopCategories = () => {
         }
         const data = await response.json();
         // Filter out categories that don't have an image
-        const categoriesWithImages = data.filter(cat => cat.imageUrl);
+        const categoriesWithImages = data.filter((cat: Category) => cat.imageUrl);
         setCategories(categoriesWithImages);
-      } catch (err) {
+      } catch (err: any) {
         setError(err.message);
       } finally {
         setLoading(false);

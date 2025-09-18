@@ -2,16 +2,18 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
+import { ContactSettings, ShopDepartment, FooterSettings } from '@/lib/interfaces';
 
 const Footer = () => {
-  const [settings, setSettings] = useState({
+const [contactSettings, setContactSettings] = useState<ContactSettings>({
     address: '',
     email: '',
     phone: '',
-    openingHours: ''
+    openingHours: '',
+    formTitle: ''
   });
-  const [shopDepartments, setShopDepartments] = useState([]);
-  const [footerSettings, setFooterSettings] = useState({
+  const [shopDepartments, setShopDepartments] = useState<ShopDepartment[]>([]);
+  const [footerSettings, setFooterSettings] = useState<FooterSettings>({
     gallery: [],
     newsletterText: '',
     copyrightText: '',
@@ -35,8 +37,8 @@ const Footer = () => {
         }
         const data = await res.json();
         console.log('Contact settings data:', data);
-        setSettings(data);
-      } catch (error) {
+        setContactSettings(data);
+      } catch (error: any) {
         console.error('Error fetching or parsing contact settings:', error);
       }
     };
@@ -57,7 +59,7 @@ const Footer = () => {
         const data = await res.json();
         console.log('Shop departments data:', data);
         setShopDepartments(data);
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error fetching or parsing shop departments:', error);
       }
     };
@@ -70,7 +72,7 @@ const Footer = () => {
           console.log('Footer settings data:', data);
           setFooterSettings(data);
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error fetching footer settings:', error);
       }
     };
@@ -96,7 +98,7 @@ const Footer = () => {
       } else {
         alert(data.message);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error subscribing to newsletter:', error);
       alert('An error occurred during subscription.');
     }
@@ -110,12 +112,12 @@ const Footer = () => {
           <div>
             <h3 className="font-bold text-lg mb-4">Contact info.</h3>
             <ul className="space-y-3 text-gray-400 text-sm">
-              <li>{settings.address}</li>
+              <li>{contactSettings.address}</li>
               <li className="flex items-center space-x-2">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.85 7.85a3 3 0 004.24 0L21 8" />
                 </svg>
-                <Link href={`mailto:${settings.email}`} className="hover:text-white transition-colors">{settings.email}</Link>
+                <Link href={`mailto:${contactSettings.email}`} className="hover:text-white transition-colors">{contactSettings.email}</Link>
               </li>
               <li className="flex items-center space-x-2">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -123,7 +125,7 @@ const Footer = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.25 10.5a5.25 5.25 0 11-10.5 0 5.25 5.25 0 0110.5 0z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.75 21a2.25 2.25 0 01-4.5 0V9a2.25 2.25 0 014.5 0v12z" />
                 </svg>
-                <span className="font-bold">Contact Us:</span> {settings.phone}
+                <span className="font-bold">Contact Us:</span> {contactSettings.phone}
               </li>
             </ul>
           </div>
@@ -132,9 +134,9 @@ const Footer = () => {
             <h3 className="font-bold text-lg mb-4">Shop Departments</h3>
             <ul className="space-y-3 text-gray-400 text-sm">
               {shopDepartments.map((department) => (
-                <li key={department}>
-                  <Link href={`/shop/${department}`} className="hover:text-white transition-colors">
-                    &raquo; {department}
+                <li key={department._id}>
+                  <Link href={`/shop/${department.name}`} className="hover:text-white transition-colors">
+                    &raquo; {department.name}
                   </Link>
                 </li>
               ))}

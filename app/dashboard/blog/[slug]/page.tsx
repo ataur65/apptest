@@ -2,18 +2,8 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import BlogForm, { BlogFormData } from '../../../../components/BlogForm';
-
-interface BlogPost {
-  _id: string;
-  title: string;
-  content: string;
-  author: string;
-  image: string;
-  category: string;
-  excerpt: string;
-  slug: string;
-}
+import BlogForm from '@/components/BlogForm';
+import { BlogPost } from '../../../../lib/interfaces';
 
 const EditBlogPostPage: React.FC = () => {
   const router = useRouter();
@@ -35,8 +25,8 @@ const EditBlogPostPage: React.FC = () => {
         }
         const data: BlogPost = await response.json();
         setBlogPost(data);
-      } catch (err: unknown) {
-        setError((err as Error).message);
+      } catch (err: any) {
+        setError(err.message);
       } finally {
         setLoading(false);
       }
@@ -50,7 +40,7 @@ const EditBlogPostPage: React.FC = () => {
         }
         const data: string[] = await response.json();
         setCategories(data);
-      } catch (err: unknown) {
+      } catch (err: any) {
         console.error('Error fetching categories:', err);
       }
     };
@@ -59,7 +49,7 @@ const EditBlogPostPage: React.FC = () => {
     fetchCategories();
   }, [slug]);
 
-  const handleSubmit = async (formData: BlogFormData) => {
+  const handleSubmit = async (formData: any) => {
     if (!slug) return;
     try {
       const response = await fetch(`http://localhost:5000/api/blog/${slug}`, {
@@ -74,8 +64,8 @@ const EditBlogPostPage: React.FC = () => {
       }
       alert('Blog post updated successfully!');
       router.push('/dashboard/blog'); // Redirect back to the blog list
-    } catch (err: unknown) {
-        alert(`Error updating blog post: ${(err as Error).message}`);
+    } catch (err: any) {
+        alert(`Error updating blog post: ${err.message}`);
     }
   };
 
@@ -95,7 +85,7 @@ const EditBlogPostPage: React.FC = () => {
     <div className="container mx-auto p-4">
       <BlogForm
         onSubmit={handleSubmit}
-        initialData={blogPost}
+        initialData={{ ...blogPost, content: blogPost.content || '' }}
         categories={categories}
       />
     </div>

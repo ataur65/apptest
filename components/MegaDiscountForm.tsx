@@ -1,13 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-
-export interface MegaDiscountFormData {
-  title: string;
-  subtitle: string;
-  image: string;
-  buttonText: string;
-  buttonLink: string;
-}
+import { MegaDiscountFormData } from '@/lib/interfaces';
 
 interface MegaDiscountFormProps {
   onSubmit: (formData: MegaDiscountFormData) => void;
@@ -48,7 +41,7 @@ const MegaDiscountForm: React.FC<MegaDiscountFormProps> = ({ onSubmit, initialDa
 
         const data = await response.json();
         setFormData((prevData) => ({ ...prevData, image: data.urls[0] }));
-      } catch (error) {
+      } catch (error: any) {
         console.error(error);
       }
     }

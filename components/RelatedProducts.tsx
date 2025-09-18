@@ -1,17 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-
-interface Product {
-  _id: number;
-  category: string;
-  name: string;
-  price: string;
-  image: string;
-  rating: number;
-  originalPrice: string | null;
-  isSale: boolean;
-}
+import { Product } from '@/lib/interfaces';
 
 interface RelatedProductsProps {
   items: Product[];
@@ -59,11 +49,11 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({ items }) => {
                             </div>
                             {item.isSale ? (
                                 <>
-                                    <p className="text-gray-400 line-through text-sm font-medium">${item.originalPrice}</p>
-                                    <p className="text-red-600 font-bold text-xl">${item.price}</p>
+                                    <p className="text-gray-400 line-through text-sm font-medium">${item.originalPrice?.toFixed(2)}</p>
+                                    <p className="text-red-600 font-bold text-xl">${item.price.toFixed(2)}</p>
                                 </> 
                             ) : (
-                                <p className="text-gray-800 font-bold text-xl">${item.price}</p>
+                                <p className="text-gray-800 font-bold text-xl">${item.price.toFixed(2)}</p>
                             )}
                         </div>
                     </div>

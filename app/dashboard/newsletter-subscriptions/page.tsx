@@ -2,8 +2,14 @@
 
 import { useEffect, useState } from 'react';
 
+interface Subscription {
+  _id: string;
+  email: string;
+  subscribedAt: string;
+}
+
 const NewsletterSubscriptionsPage = () => {
-  const [subscriptions, setSubscriptions] = useState([]);
+  const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
 
   useEffect(() => {
     const fetchSubscriptions = async () => {
@@ -13,14 +19,14 @@ const NewsletterSubscriptionsPage = () => {
           const data = await res.json();
           setSubscriptions(data);
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error fetching newsletter subscriptions:', error);
       }
     };
     fetchSubscriptions();
   }, []);
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id: string) => {
     try {
       const res = await fetch(`http://localhost:5000/api/newsletter/${id}`, {
         method: 'DELETE',
@@ -31,7 +37,7 @@ const NewsletterSubscriptionsPage = () => {
         const data = await res.json();
         alert(data.message);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error deleting subscription:', error);
       alert('An error occurred while deleting the subscription.');
     }

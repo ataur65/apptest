@@ -2,22 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Editor from './Editor'; // Import the new Editor component
-
-export interface ProductFormData {
-  title: string;
-  category: string;
-  brand: string;
-  shopDepartment: string;
-  price: string;
-  stock: string;
-  description: string;
-  shortDescription: string;
-  metaKeywords: string;
-  metaDescription: string;
-  productImage: string; // Added for the image data URL
-  gallery: string[]; // Added for gallery images
-  url: string;
-}
+import { ProductFormData } from '@/lib/interfaces';
 
 interface ProductFormProps {
   onSubmit: (formData: ProductFormData) => Promise<boolean>;
@@ -58,7 +43,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ onSubmit, initialData }) => {
       setCategories(categoriesData);
       setBrands(brandsData);
       setShopDepartments(shopDepartmentsData);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching data:', error);
     }
   };
@@ -123,7 +108,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ onSubmit, initialData }) => {
         const data = await response.json();
         // Ensure data.urls is an array before accessing [0]
         imageUrl = (data.urls && data.urls.length > 0) ? data.urls[0] : '';
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error uploading main image:', error);
         alert('Failed to upload main image. Please try again.');
         return;
@@ -149,7 +134,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ onSubmit, initialData }) => {
 
         const data = await response.json();
         finalGalleryUrls = data.urls || []; // Ensure it's an array, even if data.urls is undefined
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error uploading gallery images:', error);
         alert('Failed to upload gallery images. Please try again.');
         return;

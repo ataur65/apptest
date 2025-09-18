@@ -1,30 +1,16 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-
-interface FashionProduct {
-  _id: string;
-  category: string;
-  name: string;
-  price: string;
-  image: string;
-  rating: number;
-  originalPrice: string | null;
-  isSale: boolean;
-  shopDepartment: string;
-  url: string;
-}
-
-
+import { Product } from '@/lib/interfaces';
 
 interface ShopDepartmentProductsProps {
-  items: FashionProduct[];
+  items: Product[];
   departmentName: string; // New prop for dynamic title
 }
 
 const ShopDepartmentProducts: React.FC<ShopDepartmentProductsProps> = ({ items, departmentName }) => {
   const [activeBrand, setActiveBrand] = useState('All');
-  const [filteredProducts, setFilteredProducts] = useState<FashionProduct[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
 
   useEffect(() => {
     let products = items;
@@ -42,7 +28,7 @@ const ShopDepartmentProducts: React.FC<ShopDepartmentProductsProps> = ({ items, 
     setActiveBrand(brand);
   };
 
-  const uniqueBrands = items && Array.from(new Set(items.map(product => product.brand).filter(p => p)));
+  const uniqueBrands = items && Array.from(new Set(items.map(product => product.brand).filter((p): p is string => !!p)));
 
   return (
     <section className="bg-gray-100 py-12">
@@ -65,7 +51,7 @@ const ShopDepartmentProducts: React.FC<ShopDepartmentProductsProps> = ({ items, 
                 className={`tab-fashion-button ${activeBrand === brand ? 'active text-[#f7931e]' : 'text-gray-600 hover:text-[#f7931e]'}`}
                 onClick={() => handleBrandTabClick(brand)}
               >
-                {brand.toUpperCase()}
+                {brand?.toUpperCase()}
               </button>
             ))}
           </div>
@@ -104,9 +90,9 @@ const ShopDepartmentProducts: React.FC<ShopDepartmentProductsProps> = ({ items, 
                   ))}
                 </div>
                 {product.originalPrice && (
-                  <p className="text-gray-400 line-through text-sm font-medium">${product.originalPrice}</p>
+                  <p className="text-gray-400 line-through text-sm font-medium">${product.originalPrice.toFixed(2)}</p>
                 )}
-                <p className="text-red-600 font-bold text-xl">${product.price}</p>
+                <p className="text-red-600 font-bold text-xl">${product.price.toFixed(2)}</p>
                 <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mt-2">{product.category.toUpperCase()}</span> {/* Category as tag */}
               </div>
             </div>

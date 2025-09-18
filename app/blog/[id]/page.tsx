@@ -2,28 +2,19 @@ import Link from 'next/link';
 import Image from 'next/image';
 import BlogPageTemplate from '@/components/BlogPageTemplate';
 import HandpickedItems from '@/components/HandpickedItems';
-import { Product } from '@/lib/types';
-
-interface BlogPost {
-  _id: string;
-  slug: string;
-  category: string;
-  title: string;
-  date: string;
-  image: string;
-  excerpt: string;
-  content: string; 
-  author: string;
-}
+import { Product, BlogPost } from '@/lib/interfaces';
 
 async function getBlogPost(id: string): Promise<BlogPost | null> {
+  if (!process.env.NEXT_PUBLIC_BACKEND_URL) {
+    return null;
+  }
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/blog/id/${id}`, { cache: 'no-store' });
     if (!response.ok) {
       return null;
     }
     return response.json();
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching blog post:', error);
     return null;
   }
@@ -50,32 +41,41 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
 }
 
 async function getBlogCategories(): Promise<string[]> {
+  if (!process.env.NEXT_PUBLIC_BACKEND_URL) {
+    return [];
+  }
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/blog/categories`, { cache: 'no-store' });
     if (!response.ok) {
       return [];
     }
     return response.json();
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching blog categories:', error);
     return [];
   }
 }
 
 async function getRecentBlogPosts(): Promise<BlogPost[]> {
+  if (!process.env.NEXT_PUBLIC_BACKEND_URL) {
+    return [];
+  }
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/blog/recent`, { cache: 'no-store' });
     if (!response.ok) {
       return [];
     }
     return response.json();
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching recent blog posts:', error);
     return [];
   }
 }
 
 async function getBlogPosts(): Promise<BlogPost[]> {
+    if (!process.env.NEXT_PUBLIC_BACKEND_URL) {
+      return [];
+    }
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/blog?limit=1000`, { cache: 'no-store' });
       if (!response.ok) {
@@ -83,27 +83,27 @@ async function getBlogPosts(): Promise<BlogPost[]> {
       }
       const data = await response.json();
       return data.blogPosts;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching blog posts:', error);
       return [];
     }
   }
 
 export async function generateStaticParams(): Promise<{ id: string }[]> {
-    const posts = await getBlogPosts();
-    return posts.map((post) => ({
-      id: post._id,
-    }));
+    return [];
   }
 
-async function getTopViewedProducts(): Promise<any[]> {
+async function getTopViewedProducts(): Promise<Product[]> {
+  if (!process.env.NEXT_PUBLIC_BACKEND_URL) {
+    return [];
+  }
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products/top-viewed`, { cache: 'no-store' });
     if (!response.ok) {
       return [];
     }
     return response.json();
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching top viewed products:', error);
     return [];
   }
@@ -122,7 +122,7 @@ export default async function SingleBlogPostPage({ params }: { params: { id: str
   const topViewedProductsData = await getTopViewedProducts();
   const topViewedProducts: Product[] = topViewedProductsData.map((p: any) => ({
     ...p,
-    price: String(p.price),
+    price: Number(p.price),
     url: `/product/${p._id}`,
   }));
 
@@ -191,7 +191,7 @@ export default async function SingleBlogPostPage({ params }: { params: { id: str
               <Image src={typeof blogPost.image === 'string' && blogPost.image ? `${process.env.NEXT_PUBLIC_BACKEND_URL}${blogPost.image}` : '/img/placeholder.jpg'} alt={blogPost.title} width={800} height={450} className="w-full h-auto object-cover mb-6" />
               <p className="text-sm text-gray-500 mb-2">{new Date(blogPost.date).toLocaleDateString()}</p>
               <h1 className="text-3xl font-bold text-gray-900 mb-4">{blogPost.title}</h1>
-              <div dangerouslySetInnerHTML={{ __html: blogPost.content }} />
+              <div dangerouslySetInnerHTML={{ __html: blogPost.content || '' }} />
             </div>
           </main>
         </div>

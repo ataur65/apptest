@@ -11,14 +11,17 @@ import HandpickedItems from "../components/HandpickedItems";
 import NewArrivals from "../components/NewArrivals"; // Renamed component
 import ShopDepartmentProducts from "../components/ShopDepartmentProducts";
 import BlogPosts from "../components/BlogPosts";
+import { BlogPost } from '@/lib/interfaces';
+import { Product } from '@/lib/interfaces';
+
 
 import Footer from "../components/Footer";
 
 export default function Home() {
-  const [products, setProducts] = useState([]);
-  const [newArrivals, setNewArrivals] = useState([]);
-  const [blogPosts, setBlogPosts] = useState([]);
-  const [topViewedProducts, setTopViewedProducts] = useState([]);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [newArrivals, setNewArrivals] = useState<Product[]>([]);
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
+  const [topViewedProducts, setTopViewedProducts] = useState<Product[]>([]);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -27,9 +30,9 @@ export default function Home() {
         if (!response.ok) {
           throw new Error('Failed to fetch products');
         }
-        const data: { products: unknown[]; currentPage: number; totalPages: number; totalProducts: number } = await response.json();
+        const data: { products: Product[]; currentPage: number; totalPages: number; totalProducts: number } = await response.json();
         setProducts(data.products);
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error fetching products:', error);
       }
     };
@@ -45,7 +48,7 @@ export default function Home() {
         const data = await response.json();
         console.log('New Arrivals API response data:', data);
         setNewArrivals(data);
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error fetching new arrivals:', error);
       }
     };
@@ -58,7 +61,7 @@ export default function Home() {
         }
         const data = await response.json();
         setBlogPosts(data);
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error fetching blog posts:', error);
       }
     };
@@ -75,7 +78,7 @@ export default function Home() {
         const data = await response.json();
         console.log('Top Viewed Products API response data:', data);
         setTopViewedProducts(data);
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error fetching top viewed products:', error);
       }
     };
@@ -103,7 +106,7 @@ export default function Home() {
 
     <NewArrivals items={newArrivals} /> {/* Pass newArrivals to the NewArrivals component */}
 
-        {products && products.length > 0 && Array.from(new Set(products.map(p => p.shopDepartment).filter(p => p))).map(department => (
+        {products && products.length > 0 && Array.from(new Set(products.map(p => p.shopDepartment).filter((p): p is string => !!p))).map(department => (
         <ShopDepartmentProducts key={department} items={products.filter(p => p.shopDepartment === department)} departmentName={department} />
     ))}
 

@@ -5,26 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-
-interface Product {
-  _id: string; // Changed from id: number to _id: string for MongoDB compatibility
-  category: string;
-  name: string;
-  price: string;
-  image: string;
-  rating: number;
-  originalPrice: string | null;
-  isSale: boolean;
-  url: string; // Added url property
-}
-
-interface BlogPost {
-  _id: string;
-  title: string;
-  slug: string;
-  image: string;
-  date: string;
-}
+import { BlogPost, Product } from '@/lib/interfaces';
 
 interface HeroSettings {
   heading: string;
@@ -54,7 +35,7 @@ export default function ProductsPage() {
         if (response.data && response.data.productsPageHero) {
           setHeroSettings(response.data.productsPageHero);
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error fetching hero settings:', error);
       }
     };
@@ -83,7 +64,7 @@ export default function ProductsPage() {
         setTotalPages(data.totalPages);
         console.log('Products set:', data.products);
         console.log('Total pages set:', data.totalPages);
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error fetching products:', error);
       }
     };
@@ -96,7 +77,7 @@ export default function ProductsPage() {
         }
         const data = await response.json();
         setCategories(data);
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error fetching categories:', error);
       }
     };
@@ -109,7 +90,7 @@ export default function ProductsPage() {
         }
         const data = await response.json();
         setRecentBlogPosts(data);
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error fetching recent blog posts:', error);
       }
     };
@@ -131,6 +112,7 @@ export default function ProductsPage() {
       heroImage={heroSettings?.imageUrl || "/img/black-white-bedroom-with-red-accent.jpg"}
       subheading={heroSettings?.subheading || ""}
       buttonUrl={heroSettings?.buttonUrl || ""}
+      breadcrumbs={breadcrumbs}
     >
       {/* Top section with breadcrumbs, search, and sorting */}
       <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-6">

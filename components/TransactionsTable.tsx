@@ -1,11 +1,5 @@
 import React from 'react';
-
-interface Transaction {
-  name: string;
-  status: 'pending' | 'done' | 'cancelled';
-  date: string;
-  amount: string;
-}
+import { Transaction } from '@/lib/interfaces';
 
 const transactions: Transaction[] = [
   { name: 'Josephine Zimmerman', status: 'pending', date: '14.01.2024', amount: '$ 3,200' },

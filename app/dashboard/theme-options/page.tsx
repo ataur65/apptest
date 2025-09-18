@@ -2,42 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-
-interface HeroSlide {
-  _id?: string;
-  image: string;
-  title: string;
-  subtitle: string;
-  ctaButtonText: string;
-  ctaButtonLink: string;
-}
-
-interface ClientLogo {
-  _id?: string;
-  imageUrl: string;
-  link?: string;
-}
-
-interface SocialLink {
-  _id?: string;
-  platform: string;
-  url: string;
-}
-
-interface ThemeSettings {
-  metaTitle: string;
-  metaDescription: string;
-  metaLogoUrl: string;
-  faviconUrl: string;
-  headerLogoUrl: string;
-  headerLogoText: string;
-  showHeaderLogoImage: boolean;
-  showHeaderLogoText: boolean;
-  showMegaDiscounts: boolean;
-  heroSlides: HeroSlide[];
-  clientLogos: ClientLogo[];
-  socialLinks: SocialLink[];
-}
+import { HeroSlide, ClientLogo, SocialLink, ThemeSettings } from '@/lib/interfaces';
 
 type SectionKeys = 'general' | 'headerSection' | 'heroSection' | 'megaDiscountSection' | 'clientLogosSection';
 
@@ -74,8 +39,8 @@ const ThemeOptionsPage = () => {
         }
         const data = await response.json();
         setSettings(data);
-      } catch (err: unknown) {
-        setError((err as Error).message);
+      } catch (err: any) {
+        setError(err.message);
       } finally {
         setLoading(false);
       }
@@ -142,8 +107,8 @@ const ThemeOptionsPage = () => {
         } else {
           throw new Error(data.message || 'File upload failed with no URL returned.');
         }
-      } catch (err: unknown) {
-        setError((err as Error).message);
+      } catch (err: any) {
+        setError(err.message);
       }
     }
   };
@@ -234,7 +199,7 @@ const ThemeOptionsPage = () => {
         prev
           ? {
               ...prev,
-              heroSlides: prev.heroSlides.map((slide) =>
+              heroSlides: (prev.heroSlides || []).map((slide) =>
                 slide._id === editingSlide._id ? editingSlide : slide
               ),
             }
@@ -250,7 +215,7 @@ const ThemeOptionsPage = () => {
         prev
           ? {
               ...prev,
-              clientLogos: prev.clientLogos.map((logo) =>
+              clientLogos: (prev.clientLogos || []).map((logo) =>
                 logo._id === editingLogo._id ? editingLogo : logo
               ),
             }
@@ -274,7 +239,7 @@ const ThemeOptionsPage = () => {
         prev
           ? {
               ...prev,
-              socialLinks: prev.socialLinks.map((link) =>
+              socialLinks: (prev.socialLinks || []).map((link) =>
                 link._id === editingSocialLink._id ? editingSocialLink : link
               ),
             }
@@ -287,7 +252,7 @@ const ThemeOptionsPage = () => {
   const handleDeleteSlide = (id: string) => {
     if (settings && confirm('Are you sure you want to delete this slide?')) {
       setSettings((prev) =>
-        prev ? { ...prev, heroSlides: prev.heroSlides.filter((slide) => slide._id !== id) } : null
+        prev ? { ...prev, heroSlides: (prev.heroSlides || []).filter((slide) => slide._id !== id) } : null
       );
     }
   };
@@ -307,12 +272,12 @@ const ThemeOptionsPage = () => {
           prev
             ? {
                 ...prev,
-                clientLogos: prev.clientLogos.filter((logo) => logo._id !== id),
+                clientLogos: (prev.clientLogos || []).filter((logo) => logo._id !== id),
               }
             : null
         );
-      } catch (err: unknown) {
-        setError((err as Error).message);
+      } catch (err: any) {
+        setError(err.message);
       }
     }
   };
@@ -320,7 +285,7 @@ const ThemeOptionsPage = () => {
   const handleDeleteSocialLink = (id: string) => {
     if (settings && confirm('Are you sure you want to delete this social link?')) {
       setSettings((prev) =>
-        prev ? { ...prev, socialLinks: prev.socialLinks.filter((link) => link._id !== id) } : null
+        prev ? { ...prev, socialLinks: (prev.socialLinks || []).filter((link) => link._id !== id) } : null
       );
     }
   };
@@ -347,8 +312,8 @@ const ThemeOptionsPage = () => {
       }
 
       alert('Theme settings saved!');
-    } catch (err: unknown) {
-      setError((err as Error).message);
+    } catch (err: any) {
+      setError(err.message);
     }
   };
 

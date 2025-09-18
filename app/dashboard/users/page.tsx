@@ -7,12 +7,7 @@ import UsersTable from '../../../components/UsersTable';
 import Pagination from '../../../components/Pagination';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react'; // Import useSession
-
-interface User {
-  _id: string;
-  username: string;
-  role: string;
-}
+import { User } from '@/lib/interfaces';
 
 const UsersPage: React.FC = () => {
   const router = useRouter();
@@ -46,8 +41,8 @@ const UsersPage: React.FC = () => {
         }
         const data = await response.json();
         setUsers(data);
-      } catch (err: unknown) {
-        setError((err as Error).message);
+      } catch (err: any) {
+        setError(err.message);
       } finally {
         setLoading(false);
       }
@@ -81,8 +76,8 @@ const UsersPage: React.FC = () => {
       setNewPassword('');
       setNewUserRole('user');
       alert('User created successfully!');
-    } catch (err: unknown) {
-        setCreateError((err as Error).message);
+    } catch (err: any) {
+        setCreateError(err.message);
     }
   };
 

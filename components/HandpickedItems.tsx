@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 
-import { Product } from '@/lib/types';
+import { Product } from '@/lib/interfaces';
 
 interface HandpickedItemsProps {
   items: Product[];
@@ -47,7 +47,7 @@ const HandpickedItems: React.FC<HandpickedItemsProps> = ({ items }) => {
                             
                             <div className="flex justify-center mb-2">
                                 {Array.from({ length: 5 }, (_, i) => (
-                                    <span key={`${item.id}-star-${i}`} className={i < item.rating ? "text-yellow-400" : "text-gray-300"}>★</span>
+                                    <span key={`${item._id}-star-${i}`} className={i < item.rating ? "text-yellow-400" : "text-gray-300"}>★</span>
                                 ))}
                             </div>
                             {item.isSale ? (

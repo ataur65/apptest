@@ -16,7 +16,7 @@ async function getSettings() {
       return null;
     }
     return res.json();
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching settings for metadata:', error);
     return null;
   }

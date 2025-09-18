@@ -6,11 +6,7 @@ import { usePathname } from 'next/navigation';
 import Image from 'next/image'; // Import Image component
 import { signOut } from 'next-auth/react';
 import { useState, useEffect } from 'react';
-
-interface Category {
-  name: string;
-  imageUrl: string | null;
-}
+import { MenuItem, Category } from '@/lib/interfaces';
 
 interface MobileSidebarProps {
   onClose: () => void;
@@ -29,7 +25,7 @@ const MobileSidebar: React.FC<MobileSidebarProps> = ({ onClose }) => {
         if (data && data.data) {
           setMenuItems(data.data);
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error fetching menu items:', error);
       }
     };

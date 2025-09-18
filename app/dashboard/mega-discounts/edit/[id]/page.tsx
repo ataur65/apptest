@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import MegaDiscountForm, { MegaDiscountFormData } from '@/components/MegaDiscountForm';
+import MegaDiscountForm from '@/components/MegaDiscountForm';
+import { MegaDiscountFormData } from '@/lib/interfaces';
 
 const EditMegaDiscountPage = ({ params }: { params: { id: string } }) => {
   const [initialData, setInitialData] = useState<MegaDiscountFormData | null>(null);

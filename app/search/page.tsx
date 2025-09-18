@@ -1,27 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-
-interface Product {
-  _id: string;
-  name: string;
-  description: string;
-  price: number;
-  image: string;
-}
-
-interface BlogPost {
-  _id: string;
-  title: string;
-  excerpt: string;
-  image: string;
-  slug: string;
-}
-
-interface SearchResults {
-  products: Product[];
-  blogPosts: BlogPost[];
-}
+import { Product, BlogPost, SearchResults } from '@/lib/interfaces';
 
 async function searchAll(query: string): Promise<SearchResults> {
   try {
@@ -30,7 +10,7 @@ async function searchAll(query: string): Promise<SearchResults> {
       throw new Error('Failed to fetch search results');
     }
     return response.json();
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching search results:', error);
     return { products: [], blogPosts: [] };
   }
@@ -54,7 +34,7 @@ export default async function SearchPage({ searchParams }: { searchParams: { q: 
                 <Image src={typeof product.image === 'string' && product.image ? product.image : '/img/placeholder.jpg'} alt={product.name} width={300} height={200} className="w-full h-48 object-cover" />
                 <div className="p-4">
                   <h3 className="font-bold text-lg mb-1">{product.name}</h3>
-                  <p className="text-gray-600 text-sm">{product.description.substring(0, 100)}...</p>
+                  <p className="text-gray-600 text-sm">{(product.description || '').substring(0, 100)}...</p>
                   <p className="text-lg font-semibold mt-2">${product.price.toFixed(2)}</p>
                   <Link href={`/product/${product._id}`} className="text-blue-500 hover:underline mt-2 inline-block">View Product</Link>
                 </div>

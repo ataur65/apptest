@@ -16,12 +16,22 @@ const socialIcons = {
   reddit: faReddit,
 };
 
-const SocialIcons = ({ socialLinks }) => {
+export interface SocialLink {
+  _id?: string;
+  platform: string;
+  url: string;
+}
+
+interface SocialIconsProps {
+  socialLinks: SocialLink[];
+}
+
+const SocialIcons: React.FC<SocialIconsProps> = ({ socialLinks }) => {
   return (
     <div className="flex items-center space-x-4">
       {socialLinks.map((link) => (
         <a key={link._id} href={link.url} target="_blank" rel="noopener noreferrer" className={`social-icon ${link.platform.toLowerCase()}`}>
-          <FontAwesomeIcon icon={socialIcons[link.platform.toLowerCase()] || faGlobe} className="text-2xl" />
+          <FontAwesomeIcon icon={socialIcons[link.platform.toLowerCase() as keyof typeof socialIcons] || faGlobe} className="text-2xl" />
         </a>
       ))}
     </div>

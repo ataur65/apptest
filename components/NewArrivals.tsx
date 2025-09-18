@@ -2,18 +2,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-
-interface Product {
-  _id: string;
-  category: string;
-  name: string;
-  price: number;
-  image: string;
-  rating: number;
-  originalPrice: number | null;
-  isSale: boolean;
-  url: string; // Added url property
-}
+import { Product } from '@/lib/interfaces';
 
 interface NewArrivalsProps {
   items: Product[];

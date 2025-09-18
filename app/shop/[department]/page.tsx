@@ -7,26 +7,7 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'next/navigation';
-
-interface Product {
-  _id: string;
-  category: string;
-  name: string;
-  price: string;
-  image: string;
-  rating: number;
-  originalPrice: string | null;
-  isSale: boolean;
-  url: string;
-}
-
-interface BlogPost {
-  _id: string;
-  title: string;
-  slug: string;
-  image: string;
-  date: string;
-}
+import { Product, BlogPost } from '@/lib/interfaces';
 
 export default function ShopDepartmentPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -60,7 +41,7 @@ export default function ShopDepartmentPage() {
         const data = await response.json();
         setProducts(data.products || []);
         setTotalPages(data.totalPages);
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error fetching products:', error);
       }
     };
@@ -73,7 +54,7 @@ export default function ShopDepartmentPage() {
         }
         const data = await response.json();
         setRecentBlogPosts(data);
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error fetching recent blog posts:', error);
       }
     };
@@ -94,6 +75,7 @@ export default function ShopDepartmentPage() {
       heroImage={"/img/black-white-bedroom-with-red-accent.jpg"}
       subheading={`Browse our collection of ${department}`}
       buttonUrl={"/"}
+      breadcrumbs={breadcrumbs}
     >
       {/* Top section with breadcrumbs, search, and sorting */}
       <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-6">

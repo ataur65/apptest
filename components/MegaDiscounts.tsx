@@ -2,8 +2,17 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 
+interface MegaDiscount {
+  _id: string;
+  title: string;
+  subtitle: string;
+  image: string;
+  buttonText: string;
+  buttonLink: string;
+}
+
 const MegaDiscounts = () => {
-  const [megaDiscounts, setMegaDiscounts] = useState([]);
+  const [megaDiscounts, setMegaDiscounts] = useState<MegaDiscount[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showSection, setShowSection] = useState(true);
@@ -17,7 +26,7 @@ const MegaDiscounts = () => {
         }
         const data = await response.json();
         setShowSection(data.showMegaDiscounts);
-      } catch (err) {
+      } catch (err: any) {
         setError(err.message);
       }
     };
@@ -30,7 +39,7 @@ const MegaDiscounts = () => {
         }
         const data = await response.json();
         setMegaDiscounts(data);
-      } catch (err) {
+      } catch (err: any) {
         setError(err.message);
       } finally {
         setLoading(false);

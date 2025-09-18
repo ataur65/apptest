@@ -2,7 +2,8 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import ProductForm, { ProductFormData } from '@/components/ProductForm';
+import ProductForm from '@/components/ProductForm';
+import {ProductFormData} from '@/lib/interfaces';
 
 interface EditProductPageProps {
   params: {
@@ -11,7 +12,7 @@ interface EditProductPageProps {
 }
 
 const EditProductPage: React.FC<EditProductPageProps> = ({ params }) => {
-  const { id } = React.use(params);
+  const { id } = params;
   const router = useRouter();
   const [product, setProduct] = useState<ProductFormData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -26,8 +27,8 @@ const EditProductPage: React.FC<EditProductPageProps> = ({ params }) => {
         }
         const data = await response.json();
         setProduct(data);
-      } catch (err: unknown) {
-        setError((err as Error).message);
+      } catch (err: any) {
+        setError(err.message);
       } finally {
         setLoading(false);
       }
@@ -54,10 +55,10 @@ const EditProductPage: React.FC<EditProductPageProps> = ({ params }) => {
       alert('Product updated successfully!');
       router.push('/dashboard/products'); // Redirect to products list
       return true;
-    } catch (err: unknown) {
-        setError((err as Error).message);
+    } catch (err: any) {
+        setError(err.message);
         console.error(err);
-        alert((err as Error).message);
+        alert(err.message);
         return false;
       }
   };

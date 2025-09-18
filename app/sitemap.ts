@@ -17,20 +17,34 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   // Fetch dynamic product routes
-  const productsRes = await fetch('http://localhost:5000/api/products?limit=1000');
-  const productsData = await productsRes.json();
-  const productUrls = productsData.products.map((product: { _id: string; updatedAt?: Date }) => ({
-    url: `${URL}/product/${product._id}`,
-    lastModified: product.updatedAt || new Date(),
-  }));
+  let productUrls: MetadataRoute.Sitemap = [];
+  if (process.env.NEXT_PUBLIC_BACKEND_URL) {
+    try {
+      const productsRes = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products?limit=1000`);
+      const productsData = await productsRes.json();
+      productUrls = productsData.products.map((product: { _id: string; updatedAt?: Date }) => ({
+        url: `${URL}/product/${product._id}`,
+        lastModified: product.updatedAt || new Date(),
+      }));
+    } catch (error) {
+      console.error("Error fetching products for sitemap:", error);
+    }
+  }
 
   // Fetch dynamic blog routes
-  const blogsRes = await fetch('http://localhost:5000/api/blog?limit=1000');
-  const blogsData = await blogsRes.json();
-  const blogUrls = blogsData.blogPosts.map((post: { slug: string; date?: Date }) => ({
-    url: `${URL}/blog/${post.slug}`,
-    lastModified: post.date || new Date(),
-  }));
+  let blogUrls: MetadataRoute.Sitemap = [];
+  if (process.env.NEXT_PUBLIC_BACKEND_URL) {
+    try {
+      const blogsRes = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/blog?limit=1000`);
+      const blogsData = await blogsRes.json();
+      blogUrls = blogsData.blogPosts.map((post: { slug: string; date?: Date }) => ({
+        url: `${URL}/blog/${post.slug}`,
+        lastModified: post.date || new Date(),
+      }));
+    } catch (error) {
+      console.error("Error fetching blogs for sitemap:", error);
+    }
+  }
 
   return [...staticUrls, ...productUrls, ...blogUrls];
 }

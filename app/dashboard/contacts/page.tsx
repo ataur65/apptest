@@ -51,11 +51,11 @@ const ContactsPage = () => {
   };
 
   const columns = [
-    { header: 'Name', accessor: 'name' },
-    { header: 'Email', accessor: 'email' },
-    { header: 'Subject', accessor: 'subject' },
-    { header: 'Message', accessor: 'message' },
-    { header: 'Created At', accessor: 'createdAt', render: (item: Contact) => new Date(item.createdAt).toLocaleDateString() },
+    { Header: 'Name', accessor: 'name' },
+    { Header: 'Email', accessor: 'email' },
+    { Header: 'Subject', accessor: 'subject' },
+    { Header: 'Message', accessor: 'message' },
+    { Header: 'Created At', accessor: 'createdAt', render: (item: Contact) => new Date(item.createdAt).toLocaleDateString() },
   ];
 
   const tableActions = [

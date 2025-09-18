@@ -5,31 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-
-interface BlogPost {
-  _id: string;
-  slug: string;
-  category: string;
-  title: string;
-  date: string;
-  image: string;
-  excerpt: string;
-}
-
-interface Product {
-  _id: string;
-  name: string;
-  image: string;
-  price: string;
-  url: string;
-}
-
-interface HeroSettings {
-  heading: string;
-  subheading: string;
-  imageUrl: string;
-  buttonUrl: string;
-}
+import { BlogPost, Product, Settings } from '@/lib/interfaces';
 
 export default function BlogPage() {
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
@@ -40,7 +16,7 @@ export default function BlogPage() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [blogCategories, setBlogCategories] = useState<string[]>([]);
-  const [heroSettings, setHeroSettings] = useState<HeroSettings | null>(null);
+  const [heroSettings, setHeroSettings] = useState<Settings | null>(null);
   const postsPerPage = 6; // Display 6 blog posts per page
 
   useEffect(() => {
@@ -50,7 +26,7 @@ export default function BlogPage() {
         if (response.data && response.data.blogPageHero) {
           setHeroSettings(response.data.blogPageHero);
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error fetching hero settings:', error);
       }
     };
@@ -74,9 +50,8 @@ export default function BlogPage() {
         console.log('Blog posts API response data:', data);
         setBlogPosts(data.blogPosts || []);
         setTotalPages(data.totalPages);
-        console.log('Blog posts set:', data.blogPosts);
         console.log('Blog total pages set:', data.totalPages);
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error fetching blog posts:', error);
       }
     };
@@ -89,7 +64,7 @@ export default function BlogPage() {
         }
         const data = await response.json();
         setBlogCategories(data);
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error fetching blog categories:', error);
       }
     };
@@ -102,7 +77,7 @@ export default function BlogPage() {
         }
         const data = await response.json();
         setRecentBlogPosts(data);
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error fetching recent blog posts:', error);
       }
     };
@@ -115,7 +90,7 @@ export default function BlogPage() {
         }
         const data = await response.json();
         setRecentProducts(data);
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error fetching recent products:', error);
       }
     };
@@ -128,10 +103,10 @@ export default function BlogPage() {
 
   return (
     <BlogPageTemplate
-      title={heroSettings?.heading || "Our Blog"}
-      heroImage={heroSettings?.imageUrl || "/img/black-white-bedroom-with-red-accent.jpg"}
-      subheading={heroSettings?.subheading || ""}
-      buttonUrl={heroSettings?.buttonUrl || ""}
+      title={heroSettings?.blogPageHero?.heading || "Our Blog"}
+      heroImage={heroSettings?.blogPageHero?.imageUrl || "/img/black-white-bedroom-with-red-accent.jpg"}
+      subheading={heroSettings?.blogPageHero?.subheading || ""}
+      buttonUrl={heroSettings?.blogPageHero?.buttonUrl || ""}
     >
       <div className="flex flex-col md:flex-row gap-8">
         {/* Sidebar */}
@@ -199,7 +174,7 @@ export default function BlogPage() {
                     <Link href={product.url} target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-gray-800 hover:text-blue-600">
                       {product.name}
                     </Link>
-                    <p className="text-xs text-gray-500">€{parseFloat(product.price).toFixed(2)}</p>
+                    <p className="text-xs text-gray-500">€{product.price.toFixed(2)}</p>
                   </div>
                 </li>
               ))}

@@ -1,7 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import MegaDiscountForm from '@/components/MegaDiscountForm';
-import { MegaDiscountFormData } from '@/components/MegaDiscountForm';
+import { MegaDiscountFormData } from '@/lib/interfaces';
 
 const AddMegaDiscountPage = () => {
   const [error, setError] = useState(null);

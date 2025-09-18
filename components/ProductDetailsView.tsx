@@ -5,28 +5,11 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { FacebookShareButton, TwitterShareButton, PinterestShareButton, WhatsappShareButton, FacebookIcon, TwitterIcon, PinterestIcon, WhatsappIcon } from 'react-share';
 import Reviews from './Reviews';
-
-interface Product {
-  _id: string;
-  image: string;
-  name: string;
-  category: string;
-  rating: number;
-  isSale: boolean;
-  originalPrice?: number;
-  price: number;
-  shortDescription: string;
-  description: string;
-  url: string;
-  reviewCount: number;
-  gallery: string[];
-}
+import { Product, Review } from '@/lib/interfaces';
 
 interface ProductDetailsViewProps {
   product: Product;
 }
-
-
 
 export default function ProductDetailsView({ product: initialProduct }: { product: Product }) {
   const [product, setProduct] = useState(initialProduct);
@@ -43,10 +26,10 @@ export default function ProductDetailsView({ product: initialProduct }: { produc
     setMainImage(product.image || '/img/placeholder.jpg');
   }, [product.image]);
 
-  const handleReviewAdded = (newReview) => {
+  const handleReviewAdded = (newReview: Review) => {
     setProduct((prevProduct) => ({
       ...prevProduct,
-      reviewCount: prevProduct.reviewCount + 1,
+      reviewCount: (prevProduct.reviewCount || 0) + 1,
     }));
   };
 
@@ -93,7 +76,7 @@ export default function ProductDetailsView({ product: initialProduct }: { produc
           ) : null}
           <p className="text-gray-800 font-bold text-4xl mb-4">€{product.price}</p>
 
-          <div className="text-gray-700 leading-relaxed mb-6" dangerouslySetInnerHTML={{ __html: product.shortDescription }} />
+          <div className="text-gray-700 leading-relaxed mb-6" dangerouslySetInnerHTML={{ __html: product.shortDescription || '' }} />
 
           {/* buy new button */}
                     {product.url && (
@@ -114,7 +97,7 @@ export default function ProductDetailsView({ product: initialProduct }: { produc
             <div className="mt-8 border-t border-gray-200 pt-6">
               <span className="text-gray-700 font-semibold mr-4">Share:</span>
               <div className="flex gap-3">
-                <FacebookShareButton url={shareUrl} quote={product.name}>
+                <FacebookShareButton url={shareUrl} hashtag={`#${product.name.replace(/\s/g, '')}`}>
                   <FacebookIcon size={32} round />
                 </FacebookShareButton>
                 <TwitterShareButton url={shareUrl} title={product.name}>
@@ -156,7 +139,7 @@ export default function ProductDetailsView({ product: initialProduct }: { produc
           {activeTab === 'description' && (
             <div>
               <h3 className="text-xl font-semibold mb-4">Product Description</h3>
-              <div className="mb-4" dangerouslySetInnerHTML={{ __html: product.description }} />
+              <div className="mb-4" dangerouslySetInnerHTML={{ __html: product.description || '' }} />
             </div>
           )}
           {activeTab === 'reviews' && <Reviews productId={product._id} onReviewAdded={handleReviewAdded} />}
