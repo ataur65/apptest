@@ -53,7 +53,7 @@ async function getRelatedProducts(id) {
 
 async function getThemeSettings() {
   try {
-    const response = await fetch(`http://localhost:5000/api/settings/theme`, { cache: 'no-store' });
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/settings/theme`, { cache: 'no-store' });
     if (!response.ok) {
       return null;
     }

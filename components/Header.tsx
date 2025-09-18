@@ -34,7 +34,7 @@ const Header = () => {
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/settings/theme');
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/settings/theme`);
         if (!res.ok) {
           throw new Error('Failed to fetch settings');
         }

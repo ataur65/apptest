@@ -33,7 +33,7 @@ const ThemeOptionsPage = () => {
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/settings/theme');
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/settings/theme`);
         if (!response.ok) {
           throw new Error('Failed to fetch settings');
         }
@@ -260,7 +260,7 @@ const ThemeOptionsPage = () => {
   const handleDeleteLogo = async (id: string) => {
     if (settings && confirm('Are you sure you want to delete this logo?')) {
       try {
-        const response = await fetch(`http://localhost:5000/api/settings/theme/logos/${id}`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/settings/theme/logos/${id}`, {
           method: 'DELETE',
         });
 
@@ -296,7 +296,7 @@ const ThemeOptionsPage = () => {
 
     try {
       console.log('Sending settings to backend:', settings);
-      const response = await fetch('http://localhost:5000/api/settings/theme', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/settings/theme`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
