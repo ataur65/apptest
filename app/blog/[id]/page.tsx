@@ -15,6 +15,21 @@ interface BlogPost {
   author: string;
 }
 
+interface Product {
+  _id: string;
+  name: string;
+  description: string;
+  price: number;
+  category: string;
+  brand: string;
+  image: string;
+  rating: number;
+  originalPrice?: number;
+  isSale: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
 async function getBlogPost(id: string): Promise<BlogPost | null> {
   try {
     const response = await fetch(`http://localhost:5000/api/blog/id/${id}`, { cache: 'no-store' });
@@ -95,7 +110,26 @@ export async function generateStaticParams() {
     }));
   }
 
-export default async function SingleBlogPostPage({ params }: { params: { id: string } }) {
+async function getTopViewedProducts(): Promise<Product[]> {
+  try {
+    const response = await fetch(`http://localhost:5000/api/products/top-viewed`, { cache: 'no-store' });
+    if (!response.ok) {
+      return [];
+    }
+    return response.json();
+  } catch (error) {
+    console.error('Error fetching top viewed products:', error);
+    return [];
+  }
+}
+
+interface PageProps {
+  params: {
+    id: string;
+  };
+}
+
+export default async function SingleBlogPostPage({ params }: PageProps) {
   const { id } = params;
   const blogPost = await getBlogPost(id);
 
@@ -179,32 +213,4 @@ export default async function SingleBlogPostPage({ params }: { params: { id: str
         <HandpickedItems items={topViewedProducts} />
     </BlogPageTemplate>
   );
-}
-
-async function getTopViewedProducts(): Promise<Product[]> {
-  try {
-    const response = await fetch(`http://localhost:5000/api/products/top-viewed`, { cache: 'no-store' });
-    if (!response.ok) {
-      return [];
-    }
-    return response.json();
-  } catch (error) {
-    console.error('Error fetching top viewed products:', error);
-    return [];
-  }
-}
-
-interface Product {
-  _id: string;
-  name: string;
-  description: string;
-  price: number;
-  category: string;
-  brand: string;
-  image: string;
-  rating: number;
-  originalPrice?: number;
-  isSale: boolean;
-  createdAt: string;
-  updatedAt: string;
 }
