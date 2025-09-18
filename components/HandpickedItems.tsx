@@ -4,17 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 
-interface Product {
-  _id: number;
-  category: string;
-  name: string;
-  price: string;
-  image: string;
-  rating: number;
-  originalPrice: string | null;
-  isSale: boolean;
-  url: string; // Added url property
-}
+import { Product } from '@/lib/types';
 
 interface HandpickedItemsProps {
   items: Product[];

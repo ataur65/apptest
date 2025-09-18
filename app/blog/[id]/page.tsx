@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import BlogPageTemplate from '@/components/BlogPageTemplate';
 import HandpickedItems from '@/components/HandpickedItems';
+import { Product } from '@/lib/types';
 
 interface BlogPost {
   _id: string;
@@ -13,21 +14,6 @@ interface BlogPost {
   excerpt: string;
   content: string; 
   author: string;
-}
-
-interface Product {
-  _id: string;
-  name: string;
-  description: string;
-  price: number;
-  category: string;
-  brand: string;
-  image: string;
-  rating: number;
-  originalPrice?: number;
-  isSale: boolean;
-  createdAt: string;
-  updatedAt: string;
 }
 
 async function getBlogPost(id: string): Promise<BlogPost | null> {
@@ -110,7 +96,7 @@ export async function generateStaticParams(): Promise<{ id: string }[]> {
     }));
   }
 
-async function getTopViewedProducts(): Promise<Product[]> {
+async function getTopViewedProducts(): Promise<any[]> {
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products/top-viewed`, { cache: 'no-store' });
     if (!response.ok) {
@@ -133,7 +119,12 @@ export default async function SingleBlogPostPage({ params }: { params: { id: str
 
   const categories = await getBlogCategories();
   const recentPosts = await getRecentBlogPosts();
-  const topViewedProducts = await getTopViewedProducts();
+  const topViewedProductsData = await getTopViewedProducts();
+  const topViewedProducts: Product[] = topViewedProductsData.map((p: any) => ({
+    ...p,
+    price: String(p.price),
+    url: `/product/${p._id}`,
+  }));
 
   const jsonLd = {
     "@context": "https://schema.org",
