@@ -103,7 +103,7 @@ async function getBlogPosts(): Promise<BlogPost[]> {
     }
   }
 
-export async function generateStaticParams() {
+export async function generateStaticParams(): Promise<{ id: string }[]> {
     const posts = await getBlogPosts();
     return posts.map((post) => ({
       id: post._id,
@@ -123,13 +123,7 @@ async function getTopViewedProducts(): Promise<Product[]> {
   }
 }
 
-interface PageProps {
-  params: {
-    id: string;
-  };
-}
-
-export default async function SingleBlogPostPage({ params }: PageProps) {
+export default async function SingleBlogPostPage({ params }: { params: { id: string } }) {
   const { id } = params;
   const blogPost = await getBlogPost(id);
 
