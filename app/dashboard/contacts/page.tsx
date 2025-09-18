@@ -56,19 +56,14 @@ const ContactsPage = () => {
     { header: 'Subject', accessor: 'subject' },
     { header: 'Message', accessor: 'message' },
     { header: 'Created At', accessor: 'createdAt', render: (item: Contact) => new Date(item.createdAt).toLocaleDateString() },
+  ];
+
+  const tableActions = [
     {
-      header: 'Actions',
-      accessor: 'actions',
-      render: (item: Contact) => (
-        <div className="flex space-x-2">
-          <button
-            onClick={() => handleDelete(item._id)}
-            className="text-red-600 hover:text-red-800"
-          >
-            <FaTrash />
-          </button>
-        </div>
-      ),
+      name: 'Delete',
+      onClick: (item: Contact) => handleDelete(item._id),
+      icon: FaTrash,
+      className: 'text-red-600 hover:text-red-800',
     },
   ];
 
@@ -86,7 +81,7 @@ const ContactsPage = () => {
       {contacts.length === 0 ? (
         <div className="text-center py-4 text-gray-600">No contacts found.</div>
       ) : (
-        <Table columns={columns} data={contacts} />
+        <Table columns={columns} data={contacts} actions={tableActions} />
       )}
     </div>
   );
