@@ -1,8 +1,13 @@
-import { MetadataRoute } from 'next'
+import { MetadataRoute } from 'next';
+import connectDB from '@/lib/db';
+import Product from '@/lib/models/Product';
+import BlogPost from '@/lib/models/BlogPost';
 
-const URL = 'http://localhost:3000';
+const URL = 'https://my-affiliatapp-8.vercel.app';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  await connectDB();
+
   const staticRoutes = [
     '',
     '/products',
@@ -18,32 +23,26 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Fetch dynamic product routes
   let productUrls: MetadataRoute.Sitemap = [];
-  if (process.env.NEXT_PUBLIC_BACKEND_URL) {
-    try {
-      const productsRes = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products?limit=1000`);
-      const productsData = await productsRes.json();
-      productUrls = productsData.products.map((product: { _id: string; updatedAt?: Date }) => ({
-        url: `${URL}/product/${product._id}`,
-        lastModified: product.updatedAt || new Date(),
-      }));
-    } catch (error) {
-      console.error("Error fetching products for sitemap:", error);
-    }
+  try {
+    const products = await Product.find({}, '_id updatedAt').limit(1000);
+    productUrls = products.map((product: { _id: string; updatedAt?: Date }) => ({
+      url: `${URL}/product/${product._id}`,
+      lastModified: product.updatedAt || new Date(),
+    }));
+  } catch (error) {
+    console.error("Error fetching products for sitemap:", error);
   }
 
   // Fetch dynamic blog routes
   let blogUrls: MetadataRoute.Sitemap = [];
-  if (process.env.NEXT_PUBLIC_BACKEND_URL) {
-    try {
-      const blogsRes = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/blog?limit=1000`);
-      const blogsData = await blogsRes.json();
-      blogUrls = blogsData.blogPosts.map((post: { slug: string; date?: Date }) => ({
-        url: `${URL}/blog/${post.slug}`,
-        lastModified: post.date || new Date(),
-      }));
-    } catch (error) {
-      console.error("Error fetching blogs for sitemap:", error);
-    }
+  try {
+    const blogPosts = await BlogPost.find({}, 'slug date').limit(1000);
+    blogUrls = blogPosts.map((post: { slug: string; date?: Date }) => ({
+      url: `${URL}/blog/${post.slug}`,
+      lastModified: post.date || new Date(),
+    }));
+  } catch (error) {
+    console.error("Error fetching blogs for sitemap:", error);
   }
 
   return [...staticUrls, ...productUrls, ...blogUrls];
