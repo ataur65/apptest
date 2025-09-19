@@ -3,17 +3,18 @@ import Image from 'next/image';
 import BlogPageTemplate from '@/components/BlogPageTemplate';
 import HandpickedItems from '@/components/HandpickedItems';
 import { Product, BlogPost } from '@/lib/interfaces';
+import connectDB from '@/lib/db';
+import BlogPostModel from '@/lib/models/BlogPost';
+import ProductModel from '@/lib/models/Product';
 
 async function getBlogPost(id: string): Promise<BlogPost | null> {
-  if (!process.env.NEXT_PUBLIC_BACKEND_URL) {
-    return null;
-  }
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/blog/id/${id}`, { cache: 'no-store' });
-    if (!response.ok) {
-      return null;
+    await connectDB();
+    const post = await BlogPostModel.findById(id).lean();
+    if (post) {
+        post._id = post._id.toString();
     }
-    return response.json();
+    return post as BlogPost | null;
   } catch (error: any) {
     console.error('Error fetching blog post:', error);
     return null;
@@ -35,21 +36,15 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
     openGraph: {
       title: post.title,
       description: post.excerpt,
-      images: [{ url: `${process.env.NEXT_PUBLIC_BACKEND_URL}${post.image}` }],
+      images: [{ url: post.image }],
     },
   };
 }
 
 async function getBlogCategories(): Promise<string[]> {
-  if (!process.env.NEXT_PUBLIC_BACKEND_URL) {
-    return [];
-  }
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/blog/categories`, { cache: 'no-store' });
-    if (!response.ok) {
-      return [];
-    }
-    return response.json();
+    await connectDB();
+    return await BlogPostModel.distinct('category');
   } catch (error: any) {
     console.error('Error fetching blog categories:', error);
     return [];
@@ -57,52 +52,21 @@ async function getBlogCategories(): Promise<string[]> {
 }
 
 async function getRecentBlogPosts(): Promise<BlogPost[]> {
-  if (!process.env.NEXT_PUBLIC_BACKEND_URL) {
-    return [];
-  }
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/blog/recent`, { cache: 'no-store' });
-    if (!response.ok) {
-      return [];
-    }
-    return response.json();
+    await connectDB();
+    const posts = await BlogPostModel.find().sort({ date: -1 }).limit(3).lean();
+    return posts.map(post => ({...post, _id: post._id.toString()})) as BlogPost[];
   } catch (error: any) {
     console.error('Error fetching recent blog posts:', error);
     return [];
   }
 }
 
-async function getBlogPosts(): Promise<BlogPost[]> {
-    if (!process.env.NEXT_PUBLIC_BACKEND_URL) {
-      return [];
-    }
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/blog?limit=1000`, { cache: 'no-store' });
-      if (!response.ok) {
-        return [];
-      }
-      const data = await response.json();
-      return data.blogPosts;
-    } catch (error: any) {
-      console.error('Error fetching blog posts:', error);
-      return [];
-    }
-  }
-
-export async function generateStaticParams(): Promise<{ id: string }[]> {
-    return [];
-  }
-
 async function getTopViewedProducts(): Promise<Product[]> {
-  if (!process.env.NEXT_PUBLIC_BACKEND_URL) {
-    return [];
-  }
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products/top-viewed`, { cache: 'no-store' });
-    if (!response.ok) {
-      return [];
-    }
-    return response.json();
+    await connectDB();
+    const products = await ProductModel.find().sort({ rating: -1 }).limit(10).lean();
+    return products.map(product => ({...product, _id: product._id.toString()})) as Product[];
   } catch (error: any) {
     console.error('Error fetching top viewed products:', error);
     return [];
@@ -130,7 +94,7 @@ export default async function SingleBlogPostPage({ params }: { params: { id: str
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     "headline": blogPost.title,
-    "image": `${process.env.NEXT_PUBLIC_BACKEND_URL}${blogPost.image}`,
+    "image": blogPost.image,
     "author": {
       "@type": "Person",
       "name": blogPost.author || "Admin"
@@ -175,7 +139,7 @@ export default async function SingleBlogPostPage({ params }: { params: { id: str
               <ul className="space-y-4 text-gray-700">
                   {recentPosts.map((post) => (
                     <li key={post._id} className="flex items-center gap-3">
-                      <Image src={typeof post.image === 'string' && post.image ? `${process.env.NEXT_PUBLIC_BACKEND_URL}${post.image}` : '/img/placeholder.jpg'} alt={post.title} width={64} height={64} className="w-16 h-16 rounded-lg object-cover" />
+                      <Image src={typeof post.image === 'string' && post.image ? post.image : '/img/placeholder.jpg'} alt={post.title} width={64} height={64} className="w-16 h-16 rounded-lg object-cover" />
                       <div>
                         <h4 className="text-sm font-medium"><Link href={`/blog/${post._id}`}>{post.title}</Link></h4>
                         <p className="text-xs text-gray-500">{new Date(post.date).toLocaleDateString()}</p>
@@ -188,7 +152,7 @@ export default async function SingleBlogPostPage({ params }: { params: { id: str
 
           <main className="md:w-3/4">
             <div className="bg-white rounded-xl shadow-lg overflow-hidden p-6">
-              <Image src={typeof blogPost.image === 'string' && blogPost.image ? `${process.env.NEXT_PUBLIC_BACKEND_URL}${blogPost.image}` : '/img/placeholder.jpg'} alt={blogPost.title} width={800} height={450} className="w-full h-auto object-cover mb-6" />
+              <Image src={typeof blogPost.image === 'string' && blogPost.image ? blogPost.image : '/img/placeholder.jpg'} alt={blogPost.title} width={800} height={450} className="w-full h-auto object-cover mb-6" />
               <p className="text-sm text-gray-500 mb-2">{new Date(blogPost.date).toLocaleDateString()}</p>
               <h1 className="text-3xl font-bold text-gray-900 mb-4">{blogPost.title}</h1>
               <div dangerouslySetInnerHTML={{ __html: blogPost.content || '' }} />

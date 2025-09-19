@@ -1,16 +1,21 @@
 import ProductPageTemplate from '@/components/ProductPageTemplate';
 import ProductDetailsView from '@/components/ProductDetailsView';
 import RelatedProducts from '@/components/RelatedProducts';
-import Reviews from '@/components/Reviews';
 import Link from 'next/link';
+import connectDB from '@/lib/db';
+import Product from '@/lib/models/Product';
+import { getThemeSettings } from '@/lib/settings';
+
+const SITE_URL = 'https://my-affiliatapp-8.vercel.app';
 
 async function getProduct(id) {
   try {
-    const response = await fetch(`http://localhost:5000/api/products/${id}`, { cache: 'no-store' });
-    if (!response.ok) {
-      return null;
+    await connectDB();
+    const product = await Product.findById(id).lean();
+    if (product) {
+        product._id = product._id.toString();
     }
-    return response.json();
+    return product;
   } catch (error) {
     console.error('Failed to fetch product:', error);
     return null;
@@ -18,8 +23,7 @@ async function getProduct(id) {
 }
 
 export async function generateMetadata({ params }) {
-  const awaitedParams = await params;
-  const product = await getProduct(awaitedParams.id);
+  const product = await getProduct(params.id);
   if (!product) {
     return {
       title: 'Product Not Found',
@@ -40,33 +44,24 @@ export async function generateMetadata({ params }) {
 
 async function getRelatedProducts(id) {
   try {
-    const response = await fetch(`http://localhost:5000/api/products/${id}/related`, { cache: 'no-store' });
-    if (!response.ok) {
-      return [];
+    await connectDB();
+    const product = await Product.findById(id).lean();
+    if (!product) {
+        return [];
     }
-    return response.json();
+    const relatedProducts = await Product.find({
+      category: product.category,
+      _id: { $ne: product._id }, // Exclude the current product
+    }).limit(5).lean(); // Limit to 5 related products
+    return relatedProducts.map(p => ({...p, _id: p._id.toString()}));
   } catch (error) {
     console.error('Failed to fetch related products:', error);
     return [];
   }
 }
 
-async function getThemeSettings() {
-  try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/settings/theme`, { cache: 'no-store' });
-    if (!response.ok) {
-      return null;
-    }
-    return response.json();
-  } catch (error) {
-    console.error('Failed to fetch theme settings:', error);
-    return null;
-  }
-}
-
 export default async function ProductDetailsPage({ params }) {
-  const awaitedParams = await params;
-  const { id } = awaitedParams;
+  const { id } = params;
   const product = await getProduct(id);
   const themeSettings = await getThemeSettings();
   const socialLinks = themeSettings?.socialLinks || [];
@@ -97,7 +92,7 @@ export default async function ProductDetailsPage({ params }) {
       "@context": "https://schema.org/",
       "@type": "Product",
       "name": product.name,
-      "image": `http://localhost:3000${product.image}`,
+      "image": `${SITE_URL}${product.image}`,
       "description": product.shortDescription || product.description,
       "sku": product._id,
       "brand": {
@@ -106,7 +101,7 @@ export default async function ProductDetailsPage({ params }) {
       },
       "offers": {
         "@type": "Offer",
-        "url": `http://localhost:3000/product/${product._id}`,
+        "url": `${SITE_URL}/product/${product._id}`,
         "priceCurrency": "USD",
         "price": product.price,
         "availability": "https://schema.org/InStock",
